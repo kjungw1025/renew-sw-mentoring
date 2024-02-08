@@ -178,6 +178,7 @@ application.yml
 
 build/**
 
+.gradle/**/
 .gradle/**
 
 *.bin
