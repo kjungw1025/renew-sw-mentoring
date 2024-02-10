@@ -1,6 +1,8 @@
 package com.renew.sw.mentoring.domain.user.model.entity;
 
+import com.renew.sw.mentoring.domain.team.model.entity.Team;
 import com.renew.sw.mentoring.domain.user.model.UserRole;
+import com.renew.sw.mentoring.global.base.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,15 +19,16 @@ import static lombok.AccessLevel.PROTECTED;
         @Index(name = "idx_student_id", columnList = "student_id"),
         @Index(name = "idx_nickname", columnList = "nickname")
 })
-public class User {
+public class User extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
-    // TODO : Team Entity 추가 후 주석 해제
-//    private Team team;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @NotBlank
     @Column
@@ -46,11 +49,13 @@ public class User {
     private String nickname;
 
     @Builder
-    public User(@NotNull String studentId,
+    private User(@NotNull Team team,
+                @NotNull String studentId,
                 @NotNull String password,
                 @NotNull String name,
                 @NotNull String nickname,
                 UserRole userRole) {
+        this.team = team;
         this.studentId = studentId;
         this.password = password;
         this.name = name;
