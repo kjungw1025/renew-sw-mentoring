@@ -2,9 +2,9 @@ package com.renew.sw.mentoring.domain.team.model.entity;
 
 import com.renew.sw.mentoring.domain.user.model.entity.User;
 import com.renew.sw.mentoring.global.base.BaseEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

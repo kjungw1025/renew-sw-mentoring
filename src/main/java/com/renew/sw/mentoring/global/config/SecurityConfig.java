@@ -1,7 +1,9 @@
 package com.renew.sw.mentoring.global.config;
 
+import com.renew.sw.mentoring.global.auth.CustomAccessDeniedHandler;
 import com.renew.sw.mentoring.global.auth.CustomAuthenticationEntryPoint;
 import com.renew.sw.mentoring.global.auth.JwtAuthenticationFilter;
+import com.renew.sw.mentoring.global.error.ExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,27 +21,36 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private static final String[] PUBLIC_URI = {
-            "/**", "/swagger-ui/**", "/api-docs/**", "/test/**"
+            "/swagger-ui/**", "/api-docs/**", "/test/**"
     };
 
     private static final String[] ADMIN_URI = {
-            "/admin/**"
+            "/admin/**", "/manage/**"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers(PUBLIC_URI).permitAll()
-                                .requestMatchers(ADMIN_URI).hasRole("ADMIN"))
+                .httpBasic().disable()
+                .formLogin().disable()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers(PUBLIC_URI).permitAll()
+                .antMatchers(ADMIN_URI).access("hasRole('ADMIN')")
+                .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(e -> e.authenticationEntryPoint(customAuthenticationEntryPoint))
+                .addFilterBefore(exceptionHandlerFilter, JwtAuthenticationFilter.class)
+                .exceptionHandling()
+                .accessDeniedHandler(customAccessDeniedHandler)
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .and()
                 .build();
     }
 

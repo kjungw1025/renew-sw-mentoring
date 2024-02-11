@@ -3,9 +3,9 @@ package com.renew.sw.mentoring.domain.user.model.entity;
 import com.renew.sw.mentoring.domain.team.model.entity.Team;
 import com.renew.sw.mentoring.domain.user.model.UserRole;
 import com.renew.sw.mentoring.global.base.BaseEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +15,6 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@Table(name = "user", indexes = {
-        @Index(name = "idx_student_id", columnList = "student_id"),
-        @Index(name = "idx_nickname", columnList = "nickname")
-})
 public class User extends BaseEntity {
 
     @Id

@@ -4,8 +4,8 @@ import com.renew.sw.mentoring.domain.mission.model.entity.Mission;
 import com.renew.sw.mentoring.domain.post.model.entity.Post;
 import com.renew.sw.mentoring.domain.post.model.entity.RegisterStatus;
 import com.renew.sw.mentoring.domain.user.model.entity.User;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
