@@ -1,10 +1,10 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.2'
-	id 'io.spring.dependency-management' version '1.1.4'
+	id 'org.springframework.boot' version '2.7.15'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
-group = 'com.renew.sw'
+group = 'com.renew.sw.mentoring'
 version = '1.1.0'
 
 java {
@@ -35,22 +35,24 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-	// Thyemleaf
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.redisson:redisson-spring-boot-starter:3.16.3'
+
+	// json
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+	// Swagger
+	annotationProcessor 'com.github.therapi:therapi-runtime-javadoc-scribe:0.15.0'
+	implementation 'com.github.therapi:therapi-runtime-javadoc:0.15.0'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// jwt
+	// Jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
-	// com.sun.xml.bind
-	implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
-	implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
-
-	// javax.xml.bind
-	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 
 	// MySQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -58,6 +60,8 @@ dependencies {
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
+	testImplementation "org.testcontainers:junit-jupiter:1.16.3"
 }
 
 tasks.named('test') {
