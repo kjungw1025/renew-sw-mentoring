@@ -2,8 +2,8 @@ package com.renew.sw.mentoring.domain.post.model.entity.type;
 
 import com.renew.sw.mentoring.domain.post.model.entity.Post;
 import com.renew.sw.mentoring.domain.user.model.entity.User;
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotNull;
+import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 import lombok.*;
 
 /**

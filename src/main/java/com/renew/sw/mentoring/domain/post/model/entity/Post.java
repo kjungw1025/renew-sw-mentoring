@@ -4,7 +4,7 @@ package com.renew.sw.mentoring.domain.post.model.entity;
 import com.renew.sw.mentoring.domain.comment.model.entity.Comment;
 import com.renew.sw.mentoring.domain.user.model.entity.User;
 import com.renew.sw.mentoring.global.base.BaseEntity;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

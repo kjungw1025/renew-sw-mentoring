@@ -1,7 +1,7 @@
 package com.renew.sw.mentoring.domain.post.model.entity;
 
 import com.renew.sw.mentoring.global.base.BaseEntity;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

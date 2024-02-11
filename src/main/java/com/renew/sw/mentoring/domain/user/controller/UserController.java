@@ -19,7 +19,7 @@ public class UserController {
         userService.signup(dto);
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseLoginDto login(@RequestBody RequestLoginDto dto) {
         return userService.login(dto.getStudentId(), dto.getPassword());
     }
