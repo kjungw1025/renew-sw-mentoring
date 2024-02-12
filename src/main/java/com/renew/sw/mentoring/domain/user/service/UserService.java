@@ -92,6 +92,12 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public void resetPassword(String studentId) {
+        User user = userRepository.findByStudentId(studentId).orElseThrow(UserNotFoundException::new);
+        user.changePassword(passwordEncoder.encode("12345!"));
+    }
+
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
