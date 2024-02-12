@@ -53,15 +53,17 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public ResponseLoginDto login(String studentId, String password) {
-        User user = userRepository.findByStudentId(studentId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    public ResponseLoginDto login(RequestLoginDto dto) {
+        User user = userRepository.findByStudentId(dto.getStudentId())
+                .orElseThrow(UserNotFoundException::new);
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            AuthenticationToken token = jwtProvider.issue(user);
+            userInfoService.cacheUserInfo(user.getId(), user);
+            return new ResponseLoginDto(token);
+        } else {
+            throw new WrongPasswordException();
         }
-        AuthenticationToken token = jwtProvider.issue(user);
-        return new ResponseLoginDto(token);
     }
 
     private String createRandomNickname() {
