@@ -7,14 +7,16 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class Team extends BaseEntity {
 
     @Id
@@ -32,9 +34,12 @@ public class Team extends BaseEntity {
     private List<User> users = new ArrayList<>();
 
     @Builder
-    private Team(@NotNull String teamName,
-                @NotNull int score) {
+    private Team(@NotNull String teamName) {
         this.teamName = teamName;
-        this.score = score;
+        this.score = 0;
+    }
+
+    public void addScore(int point) {
+        this.score += point;
     }
 }

@@ -12,11 +12,12 @@ public class UserInfo {
     private final String name;
     private final String nickname;
     private final String studentId;
-    // TODO : 팀 정보 추가해도 좋을듯
+    private final String teamName;
 
     public UserInfo(User user) {
         this.name = user.getName();
         this.nickname = user.getNickname();
         this.studentId = user.getStudentId();
+        this.teamName = user.getTeam().getTeamName();
     }
 }
