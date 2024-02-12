@@ -66,6 +66,24 @@ public class UserService {
         }
     }
 
+    public void checkAlreadyNickname(String nickname) {
+        if (userRepository.findByNickname(nickname).isPresent()) {
+            throw new AlreadyNicknameException();
+        }
+    }
+
+    @Transactional
+    public void changeNickname(Long userId, RequestNickNameChangeDto dto) {
+        User user = findUser(userId);
+        checkAlreadyNickname(dto.getNickname());
+        user.changeNickName(dto.getNickname());
+        userInfoService.invalidateUserInfo(userId);
+    }
+
+    private User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    }
+
     private String createRandomNickname() {
         List<String> adjectives = new ArrayList<>();
         List<String> celebrity = new ArrayList<>();

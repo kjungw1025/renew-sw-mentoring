@@ -58,4 +58,13 @@ public class User extends BaseEntity {
         this.nickname = nickname;
         this.userRole = userRole;
     }
+
+    /**
+     * 닉네임을 변경합니다.
+     *
+     * @param nickname 닉네임
+     */
+    public void changeNickName(String nickname) {
+        this.nickname = nickname;
+    }
 }
