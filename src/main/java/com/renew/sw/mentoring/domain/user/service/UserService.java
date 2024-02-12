@@ -1,6 +1,9 @@
 package com.renew.sw.mentoring.domain.user.service;
 
 
+import com.renew.sw.mentoring.domain.team.exception.TeamNotFoundException;
+import com.renew.sw.mentoring.domain.team.model.entity.Team;
+import com.renew.sw.mentoring.domain.team.repository.TeamRepository;
 import com.renew.sw.mentoring.domain.user.exception.AlreadyNicknameException;
 import com.renew.sw.mentoring.domain.user.exception.UserNotFoundException;
 import com.renew.sw.mentoring.domain.user.exception.WrongPasswordException;
@@ -30,19 +33,23 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class UserService {
 
-    // TODO : UserService 코드 구체화
-
     private final UserRepository userRepository;
+    private final TeamRepository teamRepository;
     private final JwtTokenProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
     private final UserInfoService userInfoService;
 
+    @Transactional
     public void signup(RequestSignupDto dto) {
+        Team team = teamRepository.findByTeamName(dto.getTeamName()).orElseThrow(TeamNotFoundException::new);
+
         User user = User.builder()
+                .team(team)
                 .studentId(dto.getStudentId())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .name(dto.getName())

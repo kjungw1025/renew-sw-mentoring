@@ -9,5 +9,6 @@ public class ResponseUserInfoDto {
     private final String studentId;
     private final String username;
     private final String nickname;
+    private final String teamName;
     private final boolean isAdmin;
 }

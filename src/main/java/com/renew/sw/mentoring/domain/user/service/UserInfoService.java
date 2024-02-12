@@ -25,7 +25,7 @@ public class UserInfoService {
     public ResponseUserInfoDto getFullUserInfo(Long userId) {
         User user = persistenceRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-        return new ResponseUserInfoDto(user.getStudentId(), user.getName(), user.getNickname(), user.getUserRole().isAdmin());
+        return new ResponseUserInfoDto(user.getStudentId(), user.getName(), user.getNickname(), user.getTeam().getTeamName(), user.getUserRole().isAdmin());
     }
 
     @Transactional(readOnly = true)
