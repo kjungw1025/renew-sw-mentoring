@@ -80,6 +80,18 @@ public class UserService {
         userInfoService.invalidateUserInfo(userId);
     }
 
+    @Transactional
+    public void changePassword(Long userId, RequestExistPasswordChangeDto dto) {
+        User user = findUser(userId);
+        if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            String encodedPassword = passwordEncoder.encode(dto.getNewPassword());
+            user.changePassword(encodedPassword);
+            userInfoService.invalidateUserInfo(userId);
+        } else {
+            throw new WrongPasswordException();
+        }
+    }
+
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
