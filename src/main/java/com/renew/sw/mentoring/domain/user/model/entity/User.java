@@ -58,4 +58,22 @@ public class User extends BaseEntity {
         this.nickname = nickname;
         this.userRole = userRole;
     }
+
+    /**
+     * 비밀번호를 변경합니다.
+     *
+     * @param encodedPassword 인코딩된 비밀번호
+     */
+    public void changePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    /**
+     * 닉네임을 변경합니다.
+     *
+     * @param nickname 닉네임
+     */
+    public void changeNickName(String nickname) {
+        this.nickname = nickname;
+    }
 }
