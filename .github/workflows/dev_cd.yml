@@ -31,7 +31,7 @@ jobs:
           
   skip_cd:
     needs: check_repo
-    if: github.repository != 'EveryUniv/next-student-council-backend'
+    if: github.repository != 'gutanbug/renew-sw-mentoring'
     runs-on: ubuntu-latest
     steps:
       - name: Skip CD
@@ -41,7 +41,7 @@ jobs:
           
   build:
     runs-on: ubuntu-latest
-    if: github.repository != 'gutanbug/renew-sw-mentoring'
+    if: github.repository == 'gutanbug/renew-sw-mentoring'
     needs: check_repo
     environment: dev
     steps:
