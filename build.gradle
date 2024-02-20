@@ -54,6 +54,10 @@ dependencies {
 	// MySQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
+	// Excel Parsing
+	implementation group: 'org.apache.poi', name: 'poi', version: '5.2.4'
+	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.4'
+
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
