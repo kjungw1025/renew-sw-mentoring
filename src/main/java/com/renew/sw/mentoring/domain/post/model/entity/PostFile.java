@@ -21,14 +21,18 @@ public class PostFile extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    private String fileId;
+
+    private String contentType;
+
     private String fileName;
 
-    private String fileUrl;
 
     @Builder
-    private PostFile(String fileName, String fileUrl) {
+    private PostFile(String fileName, String fileId, String contentType) {
         this.fileName = fileName;
-        this.fileUrl = fileUrl;
+        this.fileId = fileId;
+        this.contentType = contentType;
     }
 
     public void changePost(Post post) {

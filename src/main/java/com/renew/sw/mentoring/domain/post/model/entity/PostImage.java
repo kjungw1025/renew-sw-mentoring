@@ -14,21 +14,24 @@ public class PostImage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_file_id")
+    @Column(name = "post_image_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private String fileName;
+    private String imageId;
 
-    private String fileUrl;
+    private String contentType;
+
+    private String imageName;
 
     @Builder
-    private PostImage(String fileName, String fileUrl) {
-        this.fileName = fileName;
-        this.fileUrl = fileUrl;
+    private PostImage(String imageId, String contentType, String imageName) {
+        this.imageId = imageId;
+        this.contentType = contentType;
+        this.imageName = imageName;
     }
 
     public void changePost(Post post) {

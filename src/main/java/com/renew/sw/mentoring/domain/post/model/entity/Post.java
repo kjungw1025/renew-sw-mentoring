@@ -49,4 +49,9 @@ public abstract class Post extends BaseEntity {
         this.title = title;
         this.body = body;
     }
+
+    public void update(String title, String body) {
+        this.title = title;
+        this.body = body;
+    }
 }
