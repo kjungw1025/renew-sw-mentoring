@@ -5,12 +5,13 @@ import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
-public class RequestMissionExcelDto {
+public class RequestTeamExcelDto {
 
-    @Schema(description = "미션 엑셀 파일", required = true)
+    @Schema(description = "팀 엑셀 파일", required = true)
     private final MultipartFile file;
 
-    public RequestMissionExcelDto(MultipartFile file) {
+    public RequestTeamExcelDto(MultipartFile file) {
         this.file = file;
     }
 }
+
