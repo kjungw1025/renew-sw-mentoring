@@ -44,22 +44,6 @@ public class UserService {
 
     private final UserInfoService userInfoService;
 
-    @Transactional
-    public void signup(RequestSignupDto dto) {
-        Team team = teamRepository.findByTeamName(dto.getTeamName()).orElseThrow(TeamNotFoundException::new);
-
-        User user = User.builder()
-                .team(team)
-                .studentId(dto.getStudentId())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .name(dto.getName())
-                .nickname(createRandomNickname())
-                .userRole(UserRole.MENTEE)
-                .build();
-
-        userRepository.save(user);
-    }
-
     public ResponseLoginDto login(RequestLoginDto dto) {
         User user = userRepository.findByStudentId(dto.getStudentId())
                 .orElseThrow(UserNotFoundException::new);
