@@ -38,16 +38,6 @@ public class UserController {
     }
 
     /**
-     * 회원가입
-     *
-     * @param dto 요청 body
-     */
-    @PostMapping("/signup")
-    public void signUp(@RequestBody RequestSignupDto dto) {
-        userService.signup(dto);
-    }
-
-    /**
      * 로그인
      *
      * @param dto 요청 body
