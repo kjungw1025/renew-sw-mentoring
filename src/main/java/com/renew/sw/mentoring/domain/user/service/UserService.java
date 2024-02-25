@@ -109,7 +109,7 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 
-    private String createRandomNickname() {
+    public String createRandomNickname() {
         List<String> adjectives = new ArrayList<>();
         List<String> celebrity = new ArrayList<>();
 
