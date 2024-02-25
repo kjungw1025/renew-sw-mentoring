@@ -15,17 +15,4 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-
-    @Transactional
-    public void createTeam(String teamName) {
-        checkAlreadyTeam(teamName);
-
-        teamRepository.save(Team.builder().teamName(teamName).build());
-    }
-
-    public void checkAlreadyTeam(String teamName) {
-        if (teamRepository.findByTeamName(teamName).isPresent()) {
-            throw new AlreadyTeamException();
-        }
-    }
 }

@@ -11,6 +11,7 @@ import com.renew.sw.mentoring.domain.user.service.UserService;
 import com.renew.sw.mentoring.global.auth.jwt.AppAuthentication;
 import com.renew.sw.mentoring.global.auth.role.AdminAuth;
 import com.renew.sw.mentoring.global.auth.role.UserAuth;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@Tag(name = "유저", description = "유저 관련 api")
 public class UserController {
 
     private final UserService userService;
