@@ -19,12 +19,4 @@ import javax.validation.Valid;
 public class MissionController {
 
     private final MissionParser missionParser;
-
-    /**
-     * 미션 엑셀 파일 파싱 후 저장
-     */
-    @PostMapping(value = "/parsing", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void parsing(@Valid @ModelAttribute RequestMissionExcelDto dto) throws Exception {
-        missionParser.parseMission(dto.getFile());
-    }
 }
