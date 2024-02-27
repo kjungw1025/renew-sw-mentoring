@@ -1,5 +1,6 @@
 package com.renew.sw.mentoring.domain.mission.model.entity;
 
+import com.renew.sw.mentoring.domain.mission.model.Difficulty;
 import com.renew.sw.mentoring.domain.mission.model.MissionStatus;
 import com.renew.sw.mentoring.domain.post.model.entity.type.MissionBoard;
 import com.renew.sw.mentoring.global.base.BaseEntity;
@@ -35,6 +36,9 @@ public class Mission extends BaseEntity {
     private int point;
 
     @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
+
+    @Enumerated(EnumType.STRING)
     private MissionStatus missionStatus;
 
     @OneToMany(mappedBy = "mission")
@@ -47,10 +51,12 @@ public class Mission extends BaseEntity {
     private Mission(@NotNull String name,
                     String description,
                     @NotNull int point,
+                    Difficulty difficulty,
                     MissionStatus missionStatus) {
         this.name = name;
         this.description = description;
         this.point = point;
+        this.difficulty = difficulty;
         this.missionStatus = missionStatus;
     }
 }
