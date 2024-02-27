@@ -6,7 +6,6 @@ import com.renew.sw.mentoring.domain.excel.MissionParser;
 import com.renew.sw.mentoring.domain.excel.TeamParser;
 import com.renew.sw.mentoring.domain.excel.dto.RequestMissionExcelDto;
 import com.renew.sw.mentoring.domain.excel.dto.RequestTeamExcelDto;
-import com.renew.sw.mentoring.global.auth.role.AdminAuth;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
