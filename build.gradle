@@ -39,6 +39,9 @@ dependencies {
 	// json
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
+	// AWS
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 	// Swagger
 	annotationProcessor 'com.github.therapi:therapi-runtime-javadoc-scribe:0.15.0'
 	implementation 'com.github.therapi:therapi-runtime-javadoc:0.15.0'
@@ -53,6 +56,13 @@ dependencies {
 
 	// MySQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// H2
+	runtimeOnly 'com.h2database:h2'
+
+	// Excel Parsing
+	implementation group: 'org.apache.poi', name: 'poi', version: '5.2.4'
+	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.4'
 
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

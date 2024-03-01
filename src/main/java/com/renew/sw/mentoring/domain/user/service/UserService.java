@@ -44,22 +44,6 @@ public class UserService {
 
     private final UserInfoService userInfoService;
 
-    @Transactional
-    public void signup(RequestSignupDto dto) {
-        Team team = teamRepository.findByTeamName(dto.getTeamName()).orElseThrow(TeamNotFoundException::new);
-
-        User user = User.builder()
-                .team(team)
-                .studentId(dto.getStudentId())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .name(dto.getName())
-                .nickname(createRandomNickname())
-                .userRole(UserRole.MENTEE)
-                .build();
-
-        userRepository.save(user);
-    }
-
     public ResponseLoginDto login(RequestLoginDto dto) {
         User user = userRepository.findByStudentId(dto.getStudentId())
                 .orElseThrow(UserNotFoundException::new);
@@ -109,7 +93,7 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
 
-    private String createRandomNickname() {
+    public String createRandomNickname() {
         List<String> adjectives = new ArrayList<>();
         List<String> celebrity = new ArrayList<>();
 
