@@ -1,4 +1,4 @@
-package com.renew.sw.mentoring.domain.mission.controller;
+package com.renew.sw.mentoring.domain.mission.model.dto.response;
 
 import com.renew.sw.mentoring.domain.mission.model.MissionStatus;
 import com.renew.sw.mentoring.domain.mission.model.dto.list.ResponseBonusMissionDto;
