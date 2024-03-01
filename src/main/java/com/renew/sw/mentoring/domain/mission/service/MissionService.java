@@ -1,6 +1,6 @@
 package com.renew.sw.mentoring.domain.mission.service;
 
-import com.renew.sw.mentoring.domain.mission.controller.ResponseSingleMissionDto;
+import com.renew.sw.mentoring.domain.mission.model.dto.response.ResponseSingleMissionDto;
 import com.renew.sw.mentoring.domain.mission.exception.MissionNotFoundException;
 import com.renew.sw.mentoring.domain.mission.model.Difficulty;
 import com.renew.sw.mentoring.domain.mission.model.dto.list.SummarizedMissionDto;
