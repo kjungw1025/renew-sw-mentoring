@@ -32,7 +32,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MissionServiceTest extends AbstractContainerRedisTest {
+class MissionServiceTest{
 
     @Mock
     private MissionRepository missionRepository;
