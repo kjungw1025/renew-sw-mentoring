@@ -5,6 +5,7 @@ import com.renew.sw.mentoring.domain.mission.model.MissionStatus;
 import com.renew.sw.mentoring.domain.mission.model.entity.Mission;
 import com.renew.sw.mentoring.domain.mission.repository.BonusMissionRepository;
 import com.renew.sw.mentoring.domain.mission.repository.MissionRepository;
+import com.renew.sw.mentoring.util.AbstractContainerRedisTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-class MissionControllerTest {
+class MissionControllerTest extends AbstractContainerRedisTest {
 
     @Autowired
     private MockMvc mvc;

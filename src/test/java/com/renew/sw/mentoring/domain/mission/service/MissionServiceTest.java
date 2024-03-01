@@ -8,6 +8,7 @@ import com.renew.sw.mentoring.domain.mission.model.entity.BonusMission;
 import com.renew.sw.mentoring.domain.mission.model.entity.Mission;
 import com.renew.sw.mentoring.domain.mission.repository.BonusMissionRepository;
 import com.renew.sw.mentoring.domain.mission.repository.MissionRepository;
+import com.renew.sw.mentoring.util.AbstractContainerRedisTest;
 import com.renew.sw.mentoring.util.DummyPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +32,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MissionServiceTest {
+class MissionServiceTest extends AbstractContainerRedisTest {
 
     @Mock
     private MissionRepository missionRepository;
