@@ -28,8 +28,8 @@ class TeamRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAllInBatch();
-        teamRepository.deleteAllInBatch();
+        userRepository.deleteAll();
+        teamRepository.deleteAll();
 
         for (int i = 0; i < 4; i++) {
             Team team = Team.builder()
