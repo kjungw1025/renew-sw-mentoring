@@ -1,16 +1,17 @@
 package com.renew.sw.mentoring.domain.team.controller;
 
-import com.renew.sw.mentoring.domain.excel.TeamParser;
-import com.renew.sw.mentoring.domain.excel.dto.RequestTeamExcelDto;
+import com.renew.sw.mentoring.domain.team.model.dto.list.SummarizedTeamDto;
+import com.renew.sw.mentoring.domain.team.model.dto.response.ResponsePage;
 import com.renew.sw.mentoring.domain.team.service.TeamService;
-import com.renew.sw.mentoring.global.auth.role.AdminAuth;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+@Tag(name = "멘토멘티 팀", description = "멘토멘티 팀 관련 api")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/team")
@@ -18,4 +19,15 @@ import javax.validation.Valid;
 public class TeamController {
 
     private final TeamService teamService;
+
+    /**
+     * 전체 팀 조회
+     */
+    @GetMapping
+    public ResponsePage<SummarizedTeamDto> getTeams(@RequestParam(defaultValue = "1") int page,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<SummarizedTeamDto> teams = teamService.getAllTeams(pageable);
+        return new ResponsePage<>(teams);
+    }
 }
