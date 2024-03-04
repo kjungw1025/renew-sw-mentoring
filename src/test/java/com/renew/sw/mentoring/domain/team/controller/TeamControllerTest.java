@@ -41,8 +41,8 @@ class TeamControllerTest extends AbstractContainerRedisTest {
 
     @BeforeEach
     public void setUp() {
-        userRepository.deleteAll();
-        teamRepository.deleteAll();
+        userRepository.deleteAllInBatch();
+        teamRepository.deleteAllInBatch();
 
         for (int i = 0; i < 4; i++) {
             Team team = Team.builder()
