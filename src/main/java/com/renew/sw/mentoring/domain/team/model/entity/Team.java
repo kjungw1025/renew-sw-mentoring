@@ -33,13 +33,20 @@ public class Team extends BaseEntity {
     @OneToMany(mappedBy = "team")
     private List<User> users = new ArrayList<>();
 
+    private boolean isAdminTeam;
+
     @Builder
     private Team(@NotNull String teamName) {
         this.teamName = teamName;
         this.score = 0;
+        this.isAdminTeam = false;
     }
 
     public void addScore(int point) {
         this.score += point;
+    }
+
+    public void setAdminTeam() {
+        this.isAdminTeam = true;
     }
 }
