@@ -34,6 +34,7 @@ public class AdminService {
             Team team = Team.builder()
                     .teamName("관리자 팀")
                     .build();
+            team.setAdminTeam();
             teamRepository.save(team);
 
             User user = User.builder()
