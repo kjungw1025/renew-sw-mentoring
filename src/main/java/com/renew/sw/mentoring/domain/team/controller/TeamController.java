@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/team")
-@Tag(name = "팀", description = "팀 관련 api")
 public class TeamController {
 
     private final TeamService teamService;
