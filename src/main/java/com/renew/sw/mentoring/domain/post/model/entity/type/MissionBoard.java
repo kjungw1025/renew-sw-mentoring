@@ -1,6 +1,5 @@
 package com.renew.sw.mentoring.domain.post.model.entity.type;
 
-import com.renew.sw.mentoring.domain.mission.model.entity.Mission;
 import com.renew.sw.mentoring.domain.post.model.entity.Post;
 import com.renew.sw.mentoring.domain.post.model.entity.RegisterStatus;
 import com.renew.sw.mentoring.domain.user.model.entity.User;
@@ -13,9 +12,9 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MissionBoard extends Post {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mission_id")
-    private Mission mission;
+    private Long missionId;
+
+    private boolean isBonusMissionSuccessful;
 
     @Enumerated(EnumType.STRING)
     private RegisterStatus registerStatus;
@@ -24,10 +23,12 @@ public class MissionBoard extends Post {
     private MissionBoard(@NotNull User user,
                          @NotNull String title,
                          @NotNull String body,
-                         @NotNull Mission mission,
+                         @NotNull Long missionId,
+                         boolean isBonusMissionSuccessful,
                          @NotNull RegisterStatus registerStatus) {
         super(user, title, body);
-        this.mission = mission;
+        this.missionId = missionId;
+        this.isBonusMissionSuccessful = isBonusMissionSuccessful;
         this.registerStatus = registerStatus;
     }
 }
