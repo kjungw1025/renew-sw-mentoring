@@ -1,5 +1,6 @@
 package com.renew.sw.mentoring.domain.team.model.entity;
 
+import com.renew.sw.mentoring.domain.completedmission.model.entity.CompletedMission;
 import com.renew.sw.mentoring.domain.user.model.entity.User;
 import com.renew.sw.mentoring.global.base.BaseEntity;
 import javax.persistence.*;
@@ -32,6 +33,9 @@ public class Team extends BaseEntity {
 
     @OneToMany(mappedBy = "team")
     private List<User> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team")
+    private List<CompletedMission> completedMissions = new ArrayList<>();
 
     private boolean isAdminTeam;
 

@@ -1,8 +1,8 @@
 package com.renew.sw.mentoring.domain.mission.model.entity;
 
+import com.renew.sw.mentoring.domain.completedmission.model.entity.CompletedMission;
 import com.renew.sw.mentoring.domain.mission.model.Difficulty;
 import com.renew.sw.mentoring.domain.mission.model.MissionStatus;
-import com.renew.sw.mentoring.domain.post.model.entity.type.MissionBoard;
 import com.renew.sw.mentoring.global.base.BaseEntity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -45,7 +45,7 @@ public class Mission extends BaseEntity {
     private List<BonusMission> bonusMissions = new ArrayList<>();
 
     @OneToMany(mappedBy = "mission")
-    private List<MissionBoard> missionBoards = new ArrayList<>();
+    private List<CompletedMission> completedMissions = new ArrayList<>();
 
     @Builder
     private Mission(@NotNull String name,
