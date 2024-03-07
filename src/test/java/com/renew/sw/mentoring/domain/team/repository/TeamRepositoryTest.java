@@ -1,7 +1,10 @@
 package com.renew.sw.mentoring.domain.team.repository;
 
+import com.renew.sw.mentoring.domain.post.model.entity.type.Notice;
+import com.renew.sw.mentoring.domain.post.repository.GenericPostRepository;
 import com.renew.sw.mentoring.domain.team.model.entity.Team;
 import com.renew.sw.mentoring.domain.user.repository.UserRepository;
+import com.renew.sw.mentoring.util.FullIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@FullIntegrationTest
 class TeamRepositoryTest {
 
     @Autowired
@@ -25,10 +28,14 @@ class TeamRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GenericPostRepository<Notice> noticeRepository;
+
     private final List<String> teamList = List.of("팀1", "팀2", "팀3", "팀4", "관리자팀");
 
     @BeforeEach
     void setUp() {
+        noticeRepository.deleteAll();
         userRepository.deleteAll();
         teamRepository.deleteAll();
 
