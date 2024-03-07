@@ -16,4 +16,10 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     @Query("select t from Team t where t.isAdminTeam = false order by t.score desc")
     Page<Team> findAllDesc(Pageable pageable);
+
+    @Query("select t from Team t " +
+            "inner join User u " +
+            "on t.id = u.team.id " +
+            "where u.id = :userId ")
+    Optional<Team> findByUserId(@Param("userId") Long userId);
 }
