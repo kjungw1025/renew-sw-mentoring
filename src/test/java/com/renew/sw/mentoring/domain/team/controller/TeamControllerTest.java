@@ -1,5 +1,7 @@
 package com.renew.sw.mentoring.domain.team.controller;
 
+import com.renew.sw.mentoring.domain.post.model.entity.type.Notice;
+import com.renew.sw.mentoring.domain.post.repository.GenericPostRepository;
 import com.renew.sw.mentoring.domain.team.model.entity.Team;
 import com.renew.sw.mentoring.domain.team.repository.TeamRepository;
 import com.renew.sw.mentoring.domain.user.repository.UserRepository;
@@ -36,13 +38,17 @@ class TeamControllerTest extends AbstractContainerRedisTest {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private GenericPostRepository<Notice> noticeRepository;
+
     private final List<String> teamNameList = List.of("팀1", "팀2", "팀3", "팀4", "관리자팀");
     private final List<Team> teamList = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
-        userRepository.deleteAllInBatch();
-        teamRepository.deleteAllInBatch();
+        noticeRepository.deleteAll();
+        userRepository.deleteAll();
+        teamRepository.deleteAll();
 
         for (int i = 0; i < 4; i++) {
             Team team = Team.builder()
@@ -64,7 +70,7 @@ class TeamControllerTest extends AbstractContainerRedisTest {
     @DisplayName("전체 팀 조회 - 관리자 팀은 조회되지 않아야 한다.")
     void list() throws Exception {
         // when
-        ResultActions result = mvc.perform(get("/team/"));
+        ResultActions result = mvc.perform(get("/team"));
 
         // then
         result.andExpect(status().isOk())
