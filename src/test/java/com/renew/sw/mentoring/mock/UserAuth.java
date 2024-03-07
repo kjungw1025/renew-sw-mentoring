@@ -16,6 +16,11 @@ public class UserAuth {
                 .setAuthentication(new JwtAuthentication(userId, UserRole.MENTOR));
     }
 
+    public static void withMentee(Long userId) {
+        SecurityContextHolder.getContext()
+                .setAuthentication(new JwtAuthentication(userId, UserRole.MENTEE));
+    }
+
     public static void withAdmin(Long userId) {
         SecurityContextHolder.getContext()
                 .setAuthentication(new JwtAuthentication(userId, UserRole.ADMIN));

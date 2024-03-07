@@ -2,8 +2,13 @@ package com.renew.sw.mentoring.domain.team.service;
 
 import com.renew.sw.mentoring.domain.team.exception.AlreadyTeamException;
 import com.renew.sw.mentoring.domain.team.model.dto.list.SummarizedTeamDto;
+import com.renew.sw.mentoring.domain.team.model.dto.response.ResponseTeamInfoDto;
 import com.renew.sw.mentoring.domain.team.model.entity.Team;
 import com.renew.sw.mentoring.domain.team.repository.TeamRepository;
+import com.renew.sw.mentoring.domain.user.model.UserRole;
+import com.renew.sw.mentoring.domain.user.model.entity.User;
+import com.renew.sw.mentoring.domain.user.repository.UserRepository;
+import com.renew.sw.mentoring.mock.UserAuth;
 import com.renew.sw.mentoring.util.DummyPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +36,9 @@ class TeamServiceTest {
 
     @Mock
     private TeamRepository teamRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     private final List<Team> teamList = new ArrayList<>();
 
@@ -71,5 +79,45 @@ class TeamServiceTest {
             SummarizedTeamDto dto = list.getContent().get(i);
             assertThat(dto.getTeamName()).isEqualTo(teamList.get(i).getTeamName());
         }
+    }
+
+    @Test
+    @DisplayName("우리 팀 상세 조회 (팀원, 멘토, 총 점수)")
+    void checkMyTeam() {
+        // given
+        Team team = Team.builder()
+                .teamName("teamName")
+                .build();
+        User mentorUser = User.builder()
+                .name("mentorUser")
+                .nickname("mentor")
+                .password("password")
+                .studentId("1234")
+                .userRole(UserRole.MENTOR)
+                .team(team)
+                .build();
+        UserAuth.withMentor(mentorUser.getId());
+        User menteeUser = User.builder()
+                .name("menteeUser")
+                .nickname("mentee")
+                .password("password")
+                .studentId("5678")
+                .userRole(UserRole.MENTEE)
+                .team(team)
+                .build();
+        UserAuth.withMentee(menteeUser.getId());
+        List<User> userList = new ArrayList<>(List.of(mentorUser, menteeUser));
+        when(teamRepository.findByUserId(any())).thenReturn(Optional.ofNullable(team));
+        when(userRepository.findMentorByTeamId(any())).thenReturn(Optional.of(mentorUser));
+        when(userRepository.findTeamMembersByTeamId(any())).thenReturn(userList);
+
+        // when
+        ResponseTeamInfoDto responseTeamInfoDto = teamService.getMyTeamInfo(mentorUser.getId());
+
+        // then
+        assertEquals(responseTeamInfoDto.getTeamName(), team.getTeamName());
+        assertEquals(responseTeamInfoDto.getScore(), 0);
+        assertEquals(responseTeamInfoDto.getMentor(), mentorUser.getName());
+        assertEquals(responseTeamInfoDto.getMembers().size(), userList.size());
     }
 }
