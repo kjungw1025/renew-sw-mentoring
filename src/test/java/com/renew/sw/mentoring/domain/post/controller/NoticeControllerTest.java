@@ -2,6 +2,7 @@ package com.renew.sw.mentoring.domain.post.controller;
 
 import com.renew.sw.mentoring.domain.post.model.entity.type.Notice;
 import com.renew.sw.mentoring.domain.post.repository.GenericPostRepository;
+import com.renew.sw.mentoring.domain.post.repository.NoticeRepository;
 import com.renew.sw.mentoring.domain.team.model.entity.Team;
 import com.renew.sw.mentoring.domain.team.repository.TeamRepository;
 import com.renew.sw.mentoring.domain.user.model.UserRole;
@@ -40,7 +41,7 @@ class NoticeControllerTest extends AbstractContainerRedisTest {
     private MockMvc mvc;
 
     @Autowired
-    private GenericPostRepository<Notice> noticeRepository;
+    private NoticeRepository noticeRepository;
 
     @Autowired
     private UserRepository userRepository;
