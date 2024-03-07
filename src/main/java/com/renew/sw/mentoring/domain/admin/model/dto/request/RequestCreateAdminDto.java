@@ -1,4 +1,4 @@
-package com.renew.sw.mentoring.domain.admin.controller.model.dto.request;
+package com.renew.sw.mentoring.domain.admin.model.dto.request;
 
 import lombok.Getter;
 

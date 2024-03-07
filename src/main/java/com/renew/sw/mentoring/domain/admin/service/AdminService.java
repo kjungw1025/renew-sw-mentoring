@@ -1,7 +1,7 @@
-package com.renew.sw.mentoring.domain.admin.controller.service;
+package com.renew.sw.mentoring.domain.admin.service;
 
-import com.renew.sw.mentoring.domain.admin.controller.exception.AlreadyStudentIdException;
-import com.renew.sw.mentoring.domain.admin.controller.model.dto.request.RequestCreateAdminDto;
+import com.renew.sw.mentoring.domain.admin.exception.AlreadyStudentIdException;
+import com.renew.sw.mentoring.domain.admin.model.dto.request.RequestCreateAdminDto;
 import com.renew.sw.mentoring.domain.team.exception.TeamNotFoundException;
 import com.renew.sw.mentoring.domain.team.model.entity.Team;
 import com.renew.sw.mentoring.domain.team.repository.TeamRepository;

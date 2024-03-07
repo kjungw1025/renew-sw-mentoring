@@ -1,7 +1,7 @@
-package com.renew.sw.mentoring.domain.admin.controller.controller;
+package com.renew.sw.mentoring.domain.admin.controller;
 
-import com.renew.sw.mentoring.domain.admin.controller.model.dto.request.RequestCreateAdminDto;
-import com.renew.sw.mentoring.domain.admin.controller.service.AdminService;
+import com.renew.sw.mentoring.domain.admin.model.dto.request.RequestCreateAdminDto;
+import com.renew.sw.mentoring.domain.admin.service.AdminService;
 import com.renew.sw.mentoring.domain.excel.MissionParser;
 import com.renew.sw.mentoring.domain.excel.TeamParser;
 import com.renew.sw.mentoring.domain.excel.dto.RequestMissionExcelDto;
