@@ -27,7 +27,7 @@ public abstract class Post extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "mentoring_user_id")
     private User user;
 
     private String title;

@@ -29,8 +29,7 @@ public class MissionController {
      * @param hasBonusMission  보너스 미션 포함 여부
      * @param difficulty       난이도
      */
-    @GetMapping("/")
-    @UserAuth
+    @GetMapping
     public ResponsePage<SummarizedMissionDto> list(@RequestParam(required = false) String keyword,
                                                    @ParameterObject Pageable pageable,
                                                    @RequestParam(required = false) boolean hasBonusMission,
@@ -46,7 +45,6 @@ public class MissionController {
      * @param missionId   미션 id
      */
     @GetMapping("/{missionId}")
-    @UserAuth
     public ResponseSingleMissionDto findOne(@PathVariable Long missionId) {
         return missionService.findOne(missionId);
     }

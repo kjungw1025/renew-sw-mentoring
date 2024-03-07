@@ -41,7 +41,7 @@ public class ResponseSingleGenericPostDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.body = post.getBody();
-        this.author = post.getUser().getName();
+        this.author = post.getUser().getNickname();
         this.createdAt = post.getCreatedAt();
         this.images = PostImageDto.listOf(s3service, post.getImages());
         this.files = PostFileDto.listOf(s3service, post.getFiles());
