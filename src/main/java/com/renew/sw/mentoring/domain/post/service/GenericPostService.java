@@ -5,6 +5,7 @@ import com.renew.sw.mentoring.domain.post.model.entity.Post;
 import com.renew.sw.mentoring.domain.post.model.entity.PostFile;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestCreateGenericPostDto;
+import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestUpdateGenericPostDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.response.ResponseSingleGenericPostDto;
 import com.renew.sw.mentoring.domain.post.repository.GenericPostRepository;
 import com.renew.sw.mentoring.domain.user.exception.UserNotFoundException;
@@ -144,7 +145,7 @@ public class GenericPostService<E extends Post> {
     }
 
     @Transactional
-    public <T> T findOne(GenericPostRepository<E> repository, Long postId, @Nullable Long userId, UserRole role,
+    public <T> T findOne(GenericPostRepository<E> repository, Long postId, Long userId, UserRole role,
                          PostResultMapper<T, ResponseSingleGenericPostDto, E> mapper) {
         E post = findPost(repository, postId, role);
         ResponseSingleGenericPostDto dto = makePostDto(userId, post);
@@ -180,7 +181,7 @@ public class GenericPostService<E extends Post> {
      * 게시글 수정
      */
     @Transactional
-    public void update(GenericPostRepository<E> repository, Long postId, Long userId, RequestCreateGenericPostDto<E> dto) {
+    public void update(GenericPostRepository<E> repository, Long postId, Long userId, RequestUpdateGenericPostDto<E> dto) {
         E post = findPost(repository, postId, UserRole.USER);
         if (!post.getUser().getId().equals(userId)) {
             throw new NotGrantedException();

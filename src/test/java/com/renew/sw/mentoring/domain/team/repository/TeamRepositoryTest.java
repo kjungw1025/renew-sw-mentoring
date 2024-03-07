@@ -18,6 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TeamRepositoryTest {
+
     @Autowired
     private TeamRepository teamRepository;
 
@@ -28,8 +29,8 @@ class TeamRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAllInBatch();
-        teamRepository.deleteAllInBatch();
+        userRepository.deleteAll();
+        teamRepository.deleteAll();
 
         for (int i = 0; i < 4; i++) {
             Team team = Team.builder()
@@ -48,7 +49,7 @@ class TeamRepositoryTest {
     @Test
     @DisplayName("관리자팀을 제외한 전체 팀 조회가 잘 되는지?")
     void findAllTeam() {
-        // when
+        // given & when
         Page<Team> teams = teamRepository.findAllDesc(Pageable.unpaged());
 
         // then

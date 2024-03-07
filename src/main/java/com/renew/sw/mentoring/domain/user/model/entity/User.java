@@ -20,7 +20,7 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "mentoring_user_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
