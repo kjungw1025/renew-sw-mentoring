@@ -1,4 +1,4 @@
-package com.renew.sw.mentoring.domain.admin.controller.exception;
+package com.renew.sw.mentoring.domain.admin.exception;
 
 import com.renew.sw.mentoring.global.error.exception.LocalizedMessageException;
 import org.springframework.http.HttpStatus;
