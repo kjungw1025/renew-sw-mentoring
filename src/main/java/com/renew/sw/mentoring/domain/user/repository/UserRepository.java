@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -17,4 +18,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.name = :name")
     Optional<User> findByName(@Param("name") String name);
+
+    @Query("select u from User u where u.team.id = :teamId and u.userRole = 'MENTOR'")
+    Optional<User> findMentorByTeamId(@Param("teamId") Long teamId);
+
+    @Query("select u from User u where u.team.id = :teamId")
+    List<User> findTeamMemberByTeamId(@Param("teamId") Long teamId);
 }
