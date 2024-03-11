@@ -1,0 +1,41 @@
+package com.renew.sw.mentoring.domain.post.service;
+
+import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
+import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestCreateMissionBoardDto;
+import com.renew.sw.mentoring.domain.post.model.entity.dto.response.ResponseMissionBoardDto;
+import com.renew.sw.mentoring.domain.post.model.entity.type.MissionBoard;
+import com.renew.sw.mentoring.domain.post.repository.MissionBoardRepository;
+import com.renew.sw.mentoring.domain.post.repository.spec.PostSpec;
+import com.renew.sw.mentoring.domain.user.model.UserRole;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class MissionBoardService {
+    private final GenericPostService<MissionBoard> postService;
+    private final MissionBoardRepository repository;
+
+    public Long create(Long userId, RequestCreateMissionBoardDto dto) {
+        return postService.create(repository, userId, dto);
+    }
+
+    public ResponseMissionBoardDto findOne(Long id, Long userId, UserRole role) {
+        return postService.findOne(repository, id, userId, role, ResponseMissionBoardDto::new);
+    }
+
+    public Page<SummarizedGenericPostDto> list(String keyword, Pageable pageable, int bodySize) {
+        Specification<MissionBoard> spec = PostSpec.withTitleOrBody(keyword);
+        return postService.list(repository, spec, pageable, bodySize);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<SummarizedGenericPostDto> listMyPosts(Long userId, Pageable pageable, int bodySize) {
+        return repository.findAllByUserId(userId, pageable)
+                .map(post -> postService.makeListDto(bodySize, post));
+    }
+}
