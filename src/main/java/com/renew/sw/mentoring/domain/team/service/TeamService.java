@@ -55,7 +55,7 @@ public class TeamService {
 
         String mentor = userRepository.findMentorByTeamId(team.getId()).orElseThrow(TeamNotFoundException::new).getName();
 
-        List<User> userList = userRepository.findTeamMemberByTeamId(team.getId());
+        List<User> userList = userRepository.findTeamMenteeByTeamId(team.getId());
 
         List<String> members = new ArrayList<>();
 

@@ -22,6 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.team.id = :teamId and u.userRole = 'MENTOR'")
     Optional<User> findMentorByTeamId(@Param("teamId") Long teamId);
 
-    @Query("select u from User u where u.team.id = :teamId")
-    List<User> findTeamMemberByTeamId(@Param("teamId") Long teamId);
+    @Query("select u from User u where u.team.id = :teamId and u.userRole = 'MENTEE'")
+    List<User> findTeamMenteeByTeamId(@Param("teamId") Long teamId);
 }
