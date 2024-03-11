@@ -2,6 +2,7 @@ package com.renew.sw.mentoring.domain.post.controller;
 
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestCreateMissionBoardDto;
+import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestUpdateMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.response.ResponseMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.repository.MissionBoardRepository;
 import com.renew.sw.mentoring.domain.post.service.GenericPostService;
@@ -86,5 +87,32 @@ public class MissionBoardController {
                                                               @RequestParam(defaultValue = "10") int bodySize) {
         Page<SummarizedGenericPostDto> posts = missionBoardService.listMyPosts(auth.getUserId(), pageable, bodySize);
         return new ResponsePage<>(posts);
+    }
+
+    /**
+     * 미션 인증 글 수정
+     *
+     * @param auth  사용자 정보
+     * @param id    글 id
+     */
+    @PatchMapping("/{id}")
+    @MentorAuth
+    public void update(AppAuthentication auth,
+                       @PathVariable Long id,
+                       @RequestBody RequestUpdateMissionBoardDto dto) {
+        missionBoardService.update(auth.getUserId(), id, dto);
+    }
+
+    /**
+     * 미션 인증 글 삭제
+     *
+     * @param auth  사용자 정보
+     * @param id    글 id
+     */
+    @DeleteMapping("/{id}")
+    @MentorAuth
+    public void delete(AppAuthentication auth,
+                       @PathVariable Long id) {
+        missionBoardService.delete(auth.getUserId(), id, auth.getUserRole());
     }
 }

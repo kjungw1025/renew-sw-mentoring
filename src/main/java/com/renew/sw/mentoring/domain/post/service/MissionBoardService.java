@@ -1,12 +1,16 @@
 package com.renew.sw.mentoring.domain.post.service;
 
+import com.renew.sw.mentoring.domain.post.exception.PostNotFoundException;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestCreateMissionBoardDto;
+import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestUpdateMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.response.ResponseMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.type.MissionBoard;
+import com.renew.sw.mentoring.domain.post.model.entity.type.Notice;
 import com.renew.sw.mentoring.domain.post.repository.MissionBoardRepository;
 import com.renew.sw.mentoring.domain.post.repository.spec.PostSpec;
 import com.renew.sw.mentoring.domain.user.model.UserRole;
+import com.renew.sw.mentoring.global.error.exception.NotGrantedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,5 +41,19 @@ public class MissionBoardService {
     public Page<SummarizedGenericPostDto> listMyPosts(Long userId, Pageable pageable, int bodySize) {
         return repository.findAllByUserId(userId, pageable)
                 .map(post -> postService.makeListDto(bodySize, post));
+    }
+
+    @Transactional
+    public void update(Long userId, Long id, RequestUpdateMissionBoardDto dto) {
+        postService.update(repository, userId, id, dto);
+    }
+
+    @Transactional
+    public void delete(Long userId, Long id, UserRole role) {
+        MissionBoard missionBoard = repository.findById(id).orElseThrow(PostNotFoundException::new);
+        if ((!missionBoard.getUser().getId().equals(userId)) || (role != UserRole.ADMIN)){
+            throw new NotGrantedException();
+        }
+        repository.delete(missionBoard);
     }
 }
