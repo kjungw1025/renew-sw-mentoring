@@ -3,6 +3,7 @@ package com.renew.sw.mentoring.domain.post.service;
 import com.renew.sw.mentoring.domain.post.exception.PostNotFoundException;
 import com.renew.sw.mentoring.domain.post.model.entity.Post;
 import com.renew.sw.mentoring.domain.post.model.entity.PostFile;
+import com.renew.sw.mentoring.domain.post.model.entity.PostImage;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestCreateGenericPostDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestUpdateGenericPostDto;
@@ -101,16 +102,16 @@ public class GenericPostService<E extends Post> {
                 ImageRequest.ofList(dtoImages)
         );
 
-        List<PostFile> postImages = new ArrayList<>();
+        List<PostImage> postImages = new ArrayList<>();
         for (UploadedImage image : images) {
-            PostFile.PostFileBuilder builder = PostFile.builder()
-                    .fileName(image.getOriginalImageName())
+            PostImage.PostImageBuilder builder = PostImage.builder()
+                    .imageName(image.getOriginalImageName())
                     .contentType(image.getMimeType().toString())
-                    .fileId(image.getFileId());
+                    .imageId(image.getFileId());
 
             postImages.add(builder.build());
         }
-        for (PostFile file : postImages) {
+        for (PostImage file : postImages) {
             file.changePost(post);
         }
     }
