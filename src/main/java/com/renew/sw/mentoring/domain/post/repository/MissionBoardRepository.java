@@ -9,4 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface MissionBoardRepository extends GenericPostRepository<MissionBoard> {
     @Query("select m from MissionBoard m where m.user.id = :userId and m.registerStatus = 'IN_PROGRESS' ")
     Page<MissionBoard> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    @Query("select m from MissionBoard m where m.registerStatus = 'IN_PROGRESS' ")
+    Page<MissionBoard> findAllProgressPosts(Pageable pageable);
 }
