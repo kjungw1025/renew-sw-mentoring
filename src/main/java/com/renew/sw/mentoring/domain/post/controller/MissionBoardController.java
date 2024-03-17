@@ -1,11 +1,9 @@
 package com.renew.sw.mentoring.domain.post.controller;
 
-import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
+import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestCreateMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestUpdateMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.response.ResponseMissionBoardDto;
-import com.renew.sw.mentoring.domain.post.repository.MissionBoardRepository;
-import com.renew.sw.mentoring.domain.post.service.GenericPostService;
 import com.renew.sw.mentoring.domain.post.service.MissionBoardService;
 import com.renew.sw.mentoring.global.auth.jwt.AppAuthentication;
 import com.renew.sw.mentoring.global.auth.role.MentorAuth;
@@ -52,10 +50,10 @@ public class MissionBoardController {
      * @return          페이징된 미션 인증 게시글 목록
      */
     @GetMapping
-    public ResponsePage<SummarizedGenericPostDto> list(@RequestParam(required = false) String keyword,
-                                                       @RequestParam(defaultValue = "10") int bodySize,
-                                                       @ParameterObject Pageable pageable) {
-        Page<SummarizedGenericPostDto> list = missionBoardService.list(keyword, pageable, bodySize);
+    public ResponsePage<SummarizedMissionBoardDto> list(@RequestParam(required = false) String keyword,
+                                                        @RequestParam(defaultValue = "10") int bodySize,
+                                                        @ParameterObject Pageable pageable) {
+        Page<SummarizedMissionBoardDto> list = missionBoardService.list(keyword, pageable, bodySize);
         return new ResponsePage<>(list);
     }
 
@@ -82,10 +80,10 @@ public class MissionBoardController {
      */
     @GetMapping("/my")
     @MentorAuth
-    public ResponsePage<SummarizedGenericPostDto> listMyPosts(AppAuthentication auth,
+    public ResponsePage<SummarizedMissionBoardDto> listMyPosts(AppAuthentication auth,
                                                               @ParameterObject Pageable pageable,
                                                               @RequestParam(defaultValue = "10") int bodySize) {
-        Page<SummarizedGenericPostDto> posts = missionBoardService.listMyPosts(auth.getUserId(), pageable, bodySize);
+        Page<SummarizedMissionBoardDto> posts = missionBoardService.listMyPosts(auth.getUserId(), pageable, bodySize);
         return new ResponsePage<>(posts);
     }
 

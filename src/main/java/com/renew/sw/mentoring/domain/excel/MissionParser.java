@@ -55,7 +55,7 @@ public class MissionParser {
 
                             //미션 이름
                             if(c == 1 && cell.getStringCellValue().contains(".")) {
-                                name = cell.getStringCellValue().trim();
+                                name = cell.getStringCellValue().substring(cell.getStringCellValue().indexOf(".") + 1).trim();
                             //미션 설명
                             } else if (c == 2 && cell.getStringCellValue().length() >= 2) {
                                 description = cell.getStringCellValue().trim();

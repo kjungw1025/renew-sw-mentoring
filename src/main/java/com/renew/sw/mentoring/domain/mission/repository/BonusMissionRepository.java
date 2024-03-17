@@ -11,4 +11,6 @@ public interface BonusMissionRepository extends JpaRepository<BonusMission, Long
 
     @Query("select bm from BonusMission bm where bm.mission.id = :missionId")
     List<BonusMission> findAllByMissionId(@Param("missionId") Long missionId);
+
+
 }
