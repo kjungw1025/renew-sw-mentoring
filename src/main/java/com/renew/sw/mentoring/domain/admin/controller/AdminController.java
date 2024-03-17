@@ -6,8 +6,15 @@ import com.renew.sw.mentoring.domain.excel.MissionParser;
 import com.renew.sw.mentoring.domain.excel.TeamParser;
 import com.renew.sw.mentoring.domain.excel.dto.RequestMissionExcelDto;
 import com.renew.sw.mentoring.domain.excel.dto.RequestTeamExcelDto;
+import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
+import com.renew.sw.mentoring.global.auth.jwt.AppAuthentication;
+import com.renew.sw.mentoring.global.auth.role.AdminAuth;
+import com.renew.sw.mentoring.global.model.dto.ResponsePage;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,5 +56,17 @@ public class AdminController {
     @PostMapping("/create/admin")
     public void createAdmin(@RequestBody RequestCreateAdminDto dto) {
         adminService.createAdmin(dto);
+    }
+
+    /**
+     * 미승인된 글 전체 조회 (관리자용)
+     */
+    @GetMapping("/unapproved/mission")
+    @AdminAuth
+    public ResponsePage<SummarizedGenericPostDto> unapprovedList(AppAuthentication auth,
+                                                                 @RequestParam(defaultValue = "10") int bodySize,
+                                                                 @ParameterObject Pageable pageable) {
+        Page<SummarizedGenericPostDto> unapprovedList = adminService.unapprovedList(auth.getUserRole(), pageable, bodySize);
+        return new ResponsePage<>(unapprovedList);
     }
 }
