@@ -2,7 +2,7 @@ package com.renew.sw.mentoring.domain.admin.service;
 
 import com.renew.sw.mentoring.domain.admin.exception.AlreadyStudentIdException;
 import com.renew.sw.mentoring.domain.admin.request.RequestCreateAdminDto;
-import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
+import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.type.MissionBoard;
 import com.renew.sw.mentoring.domain.post.repository.MissionBoardRepository;
 import com.renew.sw.mentoring.domain.team.exception.TeamNotFoundException;
@@ -75,7 +75,7 @@ public class AdminService {
     /**
      * 미승인된 미션 인증글 조회
      */
-    public Page<SummarizedGenericPostDto> unapprovedList(UserRole userRole, Pageable pageable, int bodySize) {
+    public Page<SummarizedMissionBoardDto> unapprovedList(UserRole userRole, Pageable pageable, int bodySize) {
         if (!userRole.isAdmin()) {
             throw new NotGrantedException();
         }
@@ -84,8 +84,8 @@ public class AdminService {
         return unapprovedList.map((missionBoard) -> makeListDto(bodySize, missionBoard));
     }
 
-    private SummarizedGenericPostDto makeListDto(int bodySize, MissionBoard missionBoard) {
-        return new SummarizedGenericPostDto(s3service, bodySize, missionBoard);
+    private SummarizedMissionBoardDto makeListDto(int bodySize, MissionBoard missionBoard) {
+        return new SummarizedMissionBoardDto(s3service, bodySize, missionBoard);
     }
 
     /**

@@ -1,12 +1,9 @@
 package com.renew.sw.mentoring.domain.post.controller;
 
-import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestCreateMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestUpdateMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.response.ResponseMissionBoardDto;
-import com.renew.sw.mentoring.domain.post.repository.MissionBoardRepository;
-import com.renew.sw.mentoring.domain.post.service.GenericPostService;
 import com.renew.sw.mentoring.domain.post.service.MissionBoardService;
 import com.renew.sw.mentoring.global.auth.jwt.AppAuthentication;
 import com.renew.sw.mentoring.global.auth.role.MentorAuth;

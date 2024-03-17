@@ -6,7 +6,7 @@ import com.renew.sw.mentoring.domain.excel.MissionParser;
 import com.renew.sw.mentoring.domain.excel.TeamParser;
 import com.renew.sw.mentoring.domain.excel.dto.RequestMissionExcelDto;
 import com.renew.sw.mentoring.domain.excel.dto.RequestTeamExcelDto;
-import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
+import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedMissionBoardDto;
 import com.renew.sw.mentoring.global.auth.jwt.AppAuthentication;
 import com.renew.sw.mentoring.global.auth.role.AdminAuth;
 import com.renew.sw.mentoring.global.model.dto.ResponsePage;
@@ -63,10 +63,10 @@ public class AdminController {
      */
     @GetMapping("/unapproved/mission")
     @AdminAuth
-    public ResponsePage<SummarizedGenericPostDto> unapprovedList(AppAuthentication auth,
-                                                                 @RequestParam(defaultValue = "10") int bodySize,
-                                                                 @ParameterObject Pageable pageable) {
-        Page<SummarizedGenericPostDto> unapprovedList = adminService.unapprovedList(auth.getUserRole(), pageable, bodySize);
+    public ResponsePage<SummarizedMissionBoardDto> unapprovedList(AppAuthentication auth,
+                                                                  @RequestParam(defaultValue = "10") int bodySize,
+                                                                  @ParameterObject Pageable pageable) {
+        Page<SummarizedMissionBoardDto> unapprovedList = adminService.unapprovedList(auth.getUserRole(), pageable, bodySize);
         return new ResponsePage<>(unapprovedList);
     }
 }
