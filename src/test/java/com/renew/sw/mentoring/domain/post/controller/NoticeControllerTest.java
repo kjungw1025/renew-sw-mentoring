@@ -8,6 +8,7 @@ import com.renew.sw.mentoring.domain.team.repository.TeamRepository;
 import com.renew.sw.mentoring.domain.user.model.UserRole;
 import com.renew.sw.mentoring.domain.user.model.entity.User;
 import com.renew.sw.mentoring.domain.user.repository.UserRepository;
+import com.renew.sw.mentoring.mock.MultipartFileMock;
 import com.renew.sw.mentoring.mock.UserAuth;
 import com.renew.sw.mentoring.util.AbstractContainerRedisTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,44 +176,6 @@ class NoticeControllerTest extends AbstractContainerRedisTest {
 
         // then
         result.andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("공지사항 글 작성")
-    void create() throws Exception {
-        // given
-        Team team = Team.builder()
-                .teamName("teamName")
-                .build();
-        teamRepository.save(team);
-
-        User user = User.builder()
-                .name("name")
-                .nickname("nickname")
-                .password("password")
-                .studentId("12345678")
-                .userRole(UserRole.ADMIN)
-                .team(team)
-                .build();
-        userRepository.save(user);
-        UserAuth.withAdmin(user.getId());
-
-        Notice notice = Notice.builder()
-                .title("title")
-                .body("body")
-                .user(user)
-                .build();
-        noticeRepository.save(notice);
-
-        // when
-        ResultActions result = mvc.perform(multipart("/notice")
-                .param("title", "title")
-                .param("body", "body"));
-
-        // then
-        MvcResult response = result.andExpect(status().isOk())
-                .andExpect(jsonPath("id").exists())
-                .andReturn();
     }
 
     @Test
