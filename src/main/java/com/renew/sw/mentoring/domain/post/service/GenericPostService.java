@@ -91,7 +91,6 @@ public class GenericPostService<E extends Post> {
         E post = dto.toEntity(user);
 
         attachImages(dto.getImages(), post);
-        attachFiles(dto.getFiles(), post);
 
         E savedPost = repository.save(post);
         return savedPost.getId();
@@ -112,25 +111,6 @@ public class GenericPostService<E extends Post> {
             postImages.add(builder.build());
         }
         for (PostImage file : postImages) {
-            file.changePost(post);
-        }
-    }
-
-    private void attachFiles(List<MultipartFile> dtoFiles, E post) {
-        List<UploadedFile> files = fileUploadService.uploadedFiles(
-                FileRequest.ofList(dtoFiles)
-        );
-
-        List<PostFile> postFiles = new ArrayList<>();
-        for (UploadedFile file: files) {
-            PostFile.PostFileBuilder builder = PostFile.builder()
-                    .fileName(file.getOriginalFileName())
-                    .contentType(file.getMimeType().toString())
-                    .fileId(file.getFileId());
-
-            postFiles.add(builder.build());
-        }
-        for (PostFile file : postFiles) {
             file.changePost(post);
         }
     }

@@ -1,6 +1,7 @@
 package com.renew.sw.mentoring.domain.post.service;
 
 import com.renew.sw.mentoring.domain.post.exception.PostNotFoundException;
+import com.renew.sw.mentoring.domain.post.model.entity.PostFile;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedGenericPostDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestCreateNoticeDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestUpdateGenericPostDto;
@@ -14,6 +15,9 @@ import com.renew.sw.mentoring.domain.user.model.UserRole;
 import com.renew.sw.mentoring.domain.user.model.entity.User;
 import com.renew.sw.mentoring.domain.user.repository.UserRepository;
 import com.renew.sw.mentoring.global.error.exception.NotGrantedException;
+import com.renew.sw.mentoring.infra.s3.model.dto.FileRequest;
+import com.renew.sw.mentoring.infra.s3.model.dto.UploadedFile;
+import com.renew.sw.mentoring.infra.s3.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,6 +25,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -28,11 +36,36 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoticeService{
 
     private final GenericPostService<Notice> noticeService;
+    private final FileUploadService fileUploadService;
     private final NoticeRepository repository;
 
     @Transactional
     public Long create(Long userId, RequestCreateNoticeDto dto) {
-        return noticeService.create(repository, userId, dto);
+        Long postId = noticeService.create(repository, userId, dto);
+        Notice notice = repository.findById(postId).orElseThrow(PostNotFoundException::new);
+
+        attachFiles(dto.getFiles(), notice);
+
+        return postId;
+    }
+
+    private void attachFiles(List<MultipartFile> dtoFiles, Notice post) {
+        List<UploadedFile> files = fileUploadService.uploadedFiles(
+                FileRequest.ofList(dtoFiles)
+        );
+
+        List<PostFile> postFiles = new ArrayList<>();
+        for (UploadedFile file: files) {
+            PostFile.PostFileBuilder builder = PostFile.builder()
+                    .fileName(file.getOriginalFileName())
+                    .contentType(file.getMimeType().toString())
+                    .fileId(file.getFileId());
+
+            postFiles.add(builder.build());
+        }
+        for (PostFile file : postFiles) {
+            file.changePost(post);
+        }
     }
 
     public Page<SummarizedGenericPostDto> listNotice(String keyword, Pageable pageable, int bodySize) {
