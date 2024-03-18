@@ -128,7 +128,6 @@ class GenericPostServiceTest {
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(noticeRepository.save(any())).thenReturn(notice);
         when(imageUploadService.uploadedImages(any())).thenReturn(new ArrayList<>());
-        when(fileUploadService.uploadedFiles(any())).thenReturn(new ArrayList<>());
 
         // when
         Long result = noticeService.create(noticeRepository, user.getId(), dto);
@@ -139,13 +138,6 @@ class GenericPostServiceTest {
         verify(imageUploadService).uploadedImages(argThat(list -> {
             for (int i = 0; i < images.size(); i++) {
                 assertThat(list.get(i).getOriginalImageName()).isEqualTo(images.get(i).getOriginalFilename());
-            }
-            return true;
-        }));
-
-        verify(fileUploadService).uploadedFiles(argThat(list -> {
-            for (int i = 0; i < files.size(); i++) {
-                assertThat(list.get(i).getOriginalFileName()).isEqualTo(files.get(i).getOriginalFilename());
             }
             return true;
         }));

@@ -18,9 +18,8 @@ public class RequestCreateMissionBoardDto extends RequestCreateGenericPostDto<Mi
                                         @NotBlank String body,
                                         @NotBlank Long missionId,
                                         Boolean isBonusMissionSuccessful,
-                                        List<MultipartFile> images,
-                                        List<MultipartFile> files) {
-        super(title, body, images, files);
+                                        List<MultipartFile> images) {
+        super(title, body, images);
         this.missionId = missionId;
         this.isBonusMissionSuccessful = isBonusMissionSuccessful;
     }
