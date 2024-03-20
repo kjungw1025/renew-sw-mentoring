@@ -2,12 +2,14 @@ package com.renew.sw.mentoring.domain.admin.service;
 
 import com.renew.sw.mentoring.domain.admin.exception.AlreadyStudentIdException;
 import com.renew.sw.mentoring.domain.admin.request.RequestCreateAdminDto;
+import com.renew.sw.mentoring.domain.completedmission.model.entity.CompletedMission;
 import com.renew.sw.mentoring.domain.completedmission.repository.CompletedMissionRepository;
 import com.renew.sw.mentoring.domain.mission.exception.MissionNotFoundException;
 import com.renew.sw.mentoring.domain.mission.model.entity.BonusMission;
 import com.renew.sw.mentoring.domain.mission.model.entity.Mission;
 import com.renew.sw.mentoring.domain.mission.repository.BonusMissionRepository;
 import com.renew.sw.mentoring.domain.mission.repository.MissionRepository;
+import com.renew.sw.mentoring.domain.post.exception.AlreadyMissionBoardAcceptedException;
 import com.renew.sw.mentoring.domain.post.exception.MissionBoardNotAcceptedException;
 import com.renew.sw.mentoring.domain.post.exception.PostNotFoundException;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedMissionBoardDto;
@@ -86,6 +88,44 @@ public class AdminService {
     }
 
     /**
+     * 미션 인증 글 승인
+     */
+    @Transactional
+    public void acceptMission(UserRole userRole, Long missionBoardId) {
+        if (!userRole.isAdmin()) {
+            throw new NotGrantedException();
+        }
+
+        MissionBoard missionBoard = missionBoardRepository.findById(missionBoardId).orElseThrow(PostNotFoundException::new);
+
+        if (missionBoard.getRegisterStatus().equals(ACCEPTED)) {
+            throw new AlreadyMissionBoardAcceptedException();
+        }
+
+        Team team = missionBoard.getUser().getTeam();
+        Mission mission = missionRepository.findById(missionBoard.getMissionId()).orElseThrow(MissionNotFoundException::new);
+        if (missionBoard.isBonusMissionSuccessful()) {
+            BonusMission bonusMission = bonusMissionRepository.findAllByMissionId(mission.getId()).get(0);
+
+            int totalScore = mission.getPoint() + bonusMission.getPoint();
+            team.addScore(totalScore);
+            teamRepository.save(team);
+        } else {
+            team.addScore(mission.getPoint());
+            teamRepository.save(team);
+        }
+        missionBoard.changeRegisterStatus(ACCEPTED);
+        missionBoardRepository.save(missionBoard);
+
+        CompletedMission completedMission = CompletedMission.builder()
+                .team(team)
+                .mission(mission)
+                .isBonusSuccess(missionBoard.isBonusMissionSuccessful())
+                .build();
+        completedMissionRepository.save(completedMission);
+    }
+
+    /**
      * 승인 완료된 글 취소
      */
     @Transactional
@@ -107,8 +147,10 @@ public class AdminService {
 
             int totalScore = mission.getPoint() + bonusMission.getPoint();
             team.addScore(-totalScore);
+            teamRepository.save(team);
         } else {
             team.addScore(-mission.getPoint());
+            teamRepository.save(team);
         }
         missionBoard.changeRegisterStatus(REJECTED);
         missionBoardRepository.save(missionBoard);
