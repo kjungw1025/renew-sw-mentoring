@@ -31,4 +31,8 @@ public class MissionBoard extends Post {
         this.isBonusMissionSuccessful = isBonusMissionSuccessful;
         this.registerStatus = registerStatus;
     }
+
+    public void changeRegisterStatus(RegisterStatus registerStatus) {
+        this.registerStatus = registerStatus;
+    }
 }
