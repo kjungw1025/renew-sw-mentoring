@@ -11,6 +11,7 @@ import com.renew.sw.mentoring.domain.mission.repository.BonusMissionRepository;
 import com.renew.sw.mentoring.domain.mission.repository.MissionRepository;
 import com.renew.sw.mentoring.domain.post.exception.AlreadyMissionBoardAcceptedException;
 import com.renew.sw.mentoring.domain.post.exception.MissionBoardNotAcceptedException;
+import com.renew.sw.mentoring.domain.post.exception.MissionBoardNotInProgressException;
 import com.renew.sw.mentoring.domain.post.exception.PostNotFoundException;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.type.MissionBoard;
@@ -102,27 +103,50 @@ public class AdminService {
             throw new AlreadyMissionBoardAcceptedException();
         }
 
-        Team team = missionBoard.getUser().getTeam();
-        Mission mission = missionRepository.findById(missionBoard.getMissionId()).orElseThrow(MissionNotFoundException::new);
-        if (missionBoard.isBonusMissionSuccessful()) {
-            BonusMission bonusMission = bonusMissionRepository.findAllByMissionId(mission.getId()).get(0);
+        if (missionBoard.getRegisterStatus().equals(IN_PROGRESS)) {
+            Team team = missionBoard.getUser().getTeam();
+            Mission mission = missionRepository.findById(missionBoard.getMissionId()).orElseThrow(MissionNotFoundException::new);
+            if (missionBoard.isBonusMissionSuccessful()) {
+                BonusMission bonusMission = bonusMissionRepository.findAllByMissionId(mission.getId()).get(0);
 
-            int totalScore = mission.getPoint() + bonusMission.getPoint();
-            team.addScore(totalScore);
-            teamRepository.save(team);
+                int totalScore = mission.getPoint() + bonusMission.getPoint();
+                team.addScore(totalScore);
+                teamRepository.save(team);
+            } else {
+                team.addScore(mission.getPoint());
+                teamRepository.save(team);
+            }
+            missionBoard.changeRegisterStatus(ACCEPTED);
+            missionBoardRepository.save(missionBoard);
+
+            CompletedMission completedMission = CompletedMission.builder()
+                    .team(team)
+                    .mission(mission)
+                    .isBonusSuccess(missionBoard.isBonusMissionSuccessful())
+                    .build();
+            completedMissionRepository.save(completedMission);
         } else {
-            team.addScore(mission.getPoint());
-            teamRepository.save(team);
+            throw new MissionBoardNotInProgressException();
         }
-        missionBoard.changeRegisterStatus(ACCEPTED);
-        missionBoardRepository.save(missionBoard);
+    }
 
-        CompletedMission completedMission = CompletedMission.builder()
-                .team(team)
-                .mission(mission)
-                .isBonusSuccess(missionBoard.isBonusMissionSuccessful())
-                .build();
-        completedMissionRepository.save(completedMission);
+    /**
+     * 미션 인증 글 승인 거부
+     */
+    @Transactional
+    public void rejectMission(UserRole userRole, Long missionBoardId) {
+        if (!userRole.isAdmin()) {
+            throw new NotGrantedException();
+        }
+
+        MissionBoard missionBoard = missionBoardRepository.findById(missionBoardId).orElseThrow(PostNotFoundException::new);
+
+        if (missionBoard.getRegisterStatus().equals(IN_PROGRESS)) {
+            missionBoard.changeRegisterStatus(REJECTED);
+            missionBoardRepository.save(missionBoard);
+        } else {
+            throw new MissionBoardNotInProgressException();
+        }
     }
 
     /**
