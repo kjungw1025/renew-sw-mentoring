@@ -2,6 +2,14 @@ package com.renew.sw.mentoring.domain.admin.service;
 
 import com.renew.sw.mentoring.domain.admin.exception.AlreadyStudentIdException;
 import com.renew.sw.mentoring.domain.admin.request.RequestCreateAdminDto;
+import com.renew.sw.mentoring.domain.completedmission.repository.CompletedMissionRepository;
+import com.renew.sw.mentoring.domain.mission.exception.MissionNotFoundException;
+import com.renew.sw.mentoring.domain.mission.model.entity.BonusMission;
+import com.renew.sw.mentoring.domain.mission.model.entity.Mission;
+import com.renew.sw.mentoring.domain.mission.repository.BonusMissionRepository;
+import com.renew.sw.mentoring.domain.mission.repository.MissionRepository;
+import com.renew.sw.mentoring.domain.post.exception.MissionBoardNotAcceptedException;
+import com.renew.sw.mentoring.domain.post.exception.PostNotFoundException;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.type.MissionBoard;
 import com.renew.sw.mentoring.domain.post.repository.MissionBoardRepository;
@@ -22,6 +30,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.renew.sw.mentoring.domain.post.model.entity.RegisterStatus.*;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -31,6 +41,9 @@ public class AdminService {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
     private final MissionBoardRepository missionBoardRepository;
+    private final MissionRepository missionRepository;
+    private final BonusMissionRepository bonusMissionRepository;
+    private final CompletedMissionRepository completedMissionRepository;
 
     private final AWSObjectStorageService s3service;
 
@@ -70,6 +83,36 @@ public class AdminService {
                     .build();
             userRepository.save(user);
         }
+    }
+
+    /**
+     * 승인 완료된 글 취소
+     */
+    @Transactional
+    public void cancelMission(UserRole userRole, Long missionBoardId) {
+        if (!userRole.isAdmin()) {
+            throw new NotGrantedException();
+        }
+
+        MissionBoard missionBoard = missionBoardRepository.findById(missionBoardId).orElseThrow(PostNotFoundException::new);
+
+        if (!missionBoard.getRegisterStatus().equals(ACCEPTED)) {
+            throw new MissionBoardNotAcceptedException();
+        }
+
+        Team team = missionBoard.getUser().getTeam();
+        Mission mission = missionRepository.findById(missionBoard.getMissionId()).orElseThrow(MissionNotFoundException::new);
+        if (missionBoard.isBonusMissionSuccessful()) {
+            BonusMission bonusMission = bonusMissionRepository.findAllByMissionId(mission.getId()).get(0);
+
+            int totalScore = mission.getPoint() + bonusMission.getPoint();
+            team.addScore(-totalScore);
+        } else {
+            team.addScore(-mission.getPoint());
+        }
+        missionBoard.changeRegisterStatus(REJECTED);
+        missionBoardRepository.save(missionBoard);
+        completedMissionRepository.deleteByTeamIdAndMissionId(team.getId(), mission.getId());
     }
 
     /**
