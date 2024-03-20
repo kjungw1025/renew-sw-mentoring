@@ -59,7 +59,7 @@ public class AdminController {
     }
 
     /**
-     * 미승인된 글 전체 조회 (관리자용)
+     * 미승인된 글 전체 조회
      */
     @GetMapping("/unapproved/mission")
     @AdminAuth
@@ -68,5 +68,15 @@ public class AdminController {
                                                                   @ParameterObject Pageable pageable) {
         Page<SummarizedMissionBoardDto> unapprovedList = adminService.unapprovedList(auth.getUserRole(), pageable, bodySize);
         return new ResponsePage<>(unapprovedList);
+    }
+
+    /**
+     * 승인 완료된 글 취소
+     */
+    @PatchMapping("/cancel/mission/{missionBoardId}")
+    @AdminAuth
+    public void cancelMission(AppAuthentication auth,
+                              @PathVariable Long missionBoardId) {
+        adminService.cancelMission(auth.getUserRole(), missionBoardId);
     }
 }
