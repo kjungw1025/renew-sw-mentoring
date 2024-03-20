@@ -71,6 +71,16 @@ public class AdminController {
     }
 
     /**
+     * 미션 인증 글 승인
+     */
+    @PatchMapping("/accept/mission/{missionBoardId}")
+    @AdminAuth
+    public void acceptMission(AppAuthentication auth,
+                              @PathVariable Long missionBoardId) {
+        adminService.acceptMission(auth.getUserRole(), missionBoardId);
+    }
+
+    /**
      * 승인 완료된 글 취소
      */
     @PatchMapping("/cancel/mission/{missionBoardId}")
