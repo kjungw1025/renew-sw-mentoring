@@ -4,5 +4,5 @@ import com.renew.sw.mentoring.global.error.exception.LocalizedMessageException;
 import org.springframework.http.HttpStatus;
 
 public class MissionBoardNotAcceptedException extends LocalizedMessageException {
-    public MissionBoardNotAcceptedException() { super(HttpStatus.BAD_REQUEST, "faild.missionBoard"); }
+    public MissionBoardNotAcceptedException() { super(HttpStatus.BAD_REQUEST, "failed.mission-board.accepted"); }
 }
