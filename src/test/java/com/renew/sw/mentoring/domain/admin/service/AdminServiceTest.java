@@ -25,9 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -137,5 +135,41 @@ class AdminServiceTest {
         // when & then
         AlreadyMissionBoardAcceptedException exception = assertThrows(AlreadyMissionBoardAcceptedException.class, () -> adminService.acceptMission(UserRole.ADMIN, missionBoard.getId()));
         assertEquals(exception.getMessageId(), "already.mission-board.accepted");
+    }
+
+    @Test
+    @DisplayName("미션 인증 글 승인 거부가 잘 되는지?")
+    void rejectMission_1() {
+        // given
+        Team team = TeamMock.create("팀1");
+        User user = UserMock.create(team, UserRole.MENTOR, passwordEncoder);
+        Mission mission = MissionMock.create();
+        MissionBoard missionBoard = MissionBoardMock.create(user, mission.getId(),false, RegisterStatus.IN_PROGRESS);
+        ReflectionTestUtils.setField(missionBoard, "id", 1L);
+
+        when(missionBoardRepository.findById(any())).thenReturn(Optional.of(missionBoard));
+
+        // when
+        adminService.rejectMission(UserRole.ADMIN, missionBoard.getId());
+
+        // then
+        assertEquals(missionBoard.getRegisterStatus(), RegisterStatus.REJECTED);
+    }
+
+    @Test
+    @DisplayName("미션 인증 글 승인 거부 - 승인 대기 중인 글이 아닐 때, 오류 메시지를 잘 반환하는지?")
+    void rejectMission_2() {
+        // given
+        Team team = TeamMock.create("팀1");
+        User user = UserMock.create(team, UserRole.MENTOR, passwordEncoder);
+        Mission mission = MissionMock.create();
+        MissionBoard missionBoard = MissionBoardMock.create(user, mission.getId(),false, RegisterStatus.ACCEPTED);
+        ReflectionTestUtils.setField(missionBoard, "id", 1L);
+
+        when(missionBoardRepository.findById(any())).thenReturn(Optional.of(missionBoard));
+
+        // when & then
+        MissionBoardNotInProgressException exception = assertThrows(MissionBoardNotInProgressException.class, () -> adminService.rejectMission(UserRole.ADMIN, missionBoard.getId()));
+        assertEquals(exception.getMessageId(), "failed.mission-board.in-progress");
     }
 }
