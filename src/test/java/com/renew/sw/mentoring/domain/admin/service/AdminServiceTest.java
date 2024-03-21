@@ -183,14 +183,11 @@ class AdminServiceTest {
         User user = UserMock.create(team, UserRole.MENTOR, passwordEncoder);
         Mission mission = MissionMock.create();
         team.addScore(mission.getPoint());
-//        CompletedMission completedMission = CompletedMissionMock.create(team, mission, false);
         MissionBoard missionBoard = MissionBoardMock.create(user, mission.getId(),false, RegisterStatus.ACCEPTED);
 
         ReflectionTestUtils.setField(missionBoard, "id", 1L);
         ReflectionTestUtils.setField(team, "id", 2L);
         ReflectionTestUtils.setField(mission, "id", 3L);
-//        ReflectionTestUtils.setField(completedMission, "team", team);
-//        ReflectionTestUtils.setField(completedMission, "mission", mission);
 
         when(missionBoardRepository.findById(any())).thenReturn(Optional.of(missionBoard));
         when(missionRepository.findById(any())).thenReturn(Optional.of(mission));
