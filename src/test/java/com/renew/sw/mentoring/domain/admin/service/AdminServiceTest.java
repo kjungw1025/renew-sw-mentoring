@@ -6,6 +6,7 @@ import com.renew.sw.mentoring.domain.mission.model.entity.Mission;
 import com.renew.sw.mentoring.domain.mission.repository.BonusMissionRepository;
 import com.renew.sw.mentoring.domain.mission.repository.MissionRepository;
 import com.renew.sw.mentoring.domain.post.exception.AlreadyMissionBoardAcceptedException;
+import com.renew.sw.mentoring.domain.post.exception.MissionBoardNotAcceptedException;
 import com.renew.sw.mentoring.domain.post.exception.MissionBoardNotInProgressException;
 import com.renew.sw.mentoring.domain.post.model.entity.RegisterStatus;
 import com.renew.sw.mentoring.domain.post.model.entity.type.MissionBoard;
@@ -31,6 +32,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
@@ -171,5 +173,81 @@ class AdminServiceTest {
         // when & then
         MissionBoardNotInProgressException exception = assertThrows(MissionBoardNotInProgressException.class, () -> adminService.rejectMission(UserRole.ADMIN, missionBoard.getId()));
         assertEquals(exception.getMessageId(), "failed.mission-board.in-progress");
+    }
+
+    @Test
+    @DisplayName("승인 완료된 글 취소가 잘 되는지? - 메인 미션만 성공한 케이스")
+    void cancelMission_1() {
+        // given
+        Team team = TeamMock.create("팀1");
+        User user = UserMock.create(team, UserRole.MENTOR, passwordEncoder);
+        Mission mission = MissionMock.create();
+        team.addScore(mission.getPoint());
+//        CompletedMission completedMission = CompletedMissionMock.create(team, mission, false);
+        MissionBoard missionBoard = MissionBoardMock.create(user, mission.getId(),false, RegisterStatus.ACCEPTED);
+
+        ReflectionTestUtils.setField(missionBoard, "id", 1L);
+        ReflectionTestUtils.setField(team, "id", 2L);
+        ReflectionTestUtils.setField(mission, "id", 3L);
+//        ReflectionTestUtils.setField(completedMission, "team", team);
+//        ReflectionTestUtils.setField(completedMission, "mission", mission);
+
+        when(missionBoardRepository.findById(any())).thenReturn(Optional.of(missionBoard));
+        when(missionRepository.findById(any())).thenReturn(Optional.of(mission));
+
+        // when
+        adminService.cancelMission(UserRole.ADMIN, missionBoard.getId());
+
+        // then
+        assertEquals(missionBoard.getRegisterStatus(), RegisterStatus.REJECTED);
+        assertEquals(team.getScore(), 0);
+        verify(completedMissionRepository).deleteByTeamIdAndMissionId(team.getId(), mission.getId());
+    }
+
+    @Test
+    @DisplayName("승인 완료된 글 취소가 잘 되는지? - 메인 미션, 보너스 미션 모두 성공한 케이스")
+    void cancelMission_2() {
+        // given
+        Team team = TeamMock.create("팀1");
+        User user = UserMock.create(team, UserRole.MENTOR, passwordEncoder);
+        Mission mission = MissionMock.create();
+        BonusMission bonusMission = BonusMissionMock.create(mission);
+        team.addScore(mission.getPoint() + bonusMission.getPoint());
+        MissionBoard missionBoard = MissionBoardMock.create(user, mission.getId(),true, RegisterStatus.ACCEPTED);
+
+        ReflectionTestUtils.setField(missionBoard, "id", 1L);
+        ReflectionTestUtils.setField(team, "id", 2L);
+        ReflectionTestUtils.setField(mission, "id", 3L);
+
+        when(missionBoardRepository.findById(any())).thenReturn(Optional.of(missionBoard));
+        when(missionRepository.findById(any())).thenReturn(Optional.of(mission));
+        when(bonusMissionRepository.findAllByMissionId(any())).thenReturn(Collections.singletonList(bonusMission));
+
+        // when
+        adminService.cancelMission(UserRole.ADMIN, missionBoard.getId());
+
+        // then
+        assertEquals(missionBoard.getRegisterStatus(), RegisterStatus.REJECTED);
+        assertEquals(team.getScore(), 0);
+        verify(completedMissionRepository).deleteByTeamIdAndMissionId(team.getId(), mission.getId());
+    }
+
+    @Test
+    @DisplayName("승인 완료된 글 취소 - 승인 완료 상태가 아닌 글을 취소하려고 할 때, 오류 메시지를 잘 반환하는지?")
+    void cancelMission_3() {
+        // given
+        Team team = TeamMock.create("팀1");
+        User user = UserMock.create(team, UserRole.MENTOR, passwordEncoder);
+        Mission mission = MissionMock.create();
+        team.addScore(mission.getPoint());
+        MissionBoard missionBoard = MissionBoardMock.create(user, mission.getId(),false, RegisterStatus.IN_PROGRESS);
+
+        ReflectionTestUtils.setField(missionBoard, "id", 1L);
+
+        when(missionBoardRepository.findById(any())).thenReturn(Optional.of(missionBoard));
+
+        // when & then
+        MissionBoardNotAcceptedException exception = assertThrows(MissionBoardNotAcceptedException.class, () -> adminService.cancelMission(UserRole.ADMIN, missionBoard.getId()));
+        assertEquals(exception.getMessageId(), "failed.mission-board.accepted");
     }
 }
