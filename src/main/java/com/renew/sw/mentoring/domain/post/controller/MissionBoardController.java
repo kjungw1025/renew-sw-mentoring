@@ -1,5 +1,8 @@
 package com.renew.sw.mentoring.domain.post.controller;
 
+import com.renew.sw.mentoring.domain.comment.CommentService;
+import com.renew.sw.mentoring.domain.comment.model.dto.request.RequestCreateCommentDto;
+import com.renew.sw.mentoring.domain.comment.model.dto.response.SummarizedCommentDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.list.SummarizedMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestCreateMissionBoardDto;
 import com.renew.sw.mentoring.domain.post.model.entity.dto.request.RequestUpdateMissionBoardDto;
@@ -19,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Tag(name = "미션 인증 게시판", description = "미션 인증 관련 api")
 @RestController
@@ -27,6 +31,7 @@ import javax.validation.Valid;
 public class MissionBoardController {
 
     private final MissionBoardService missionBoardService;
+    private final CommentService commentService;
 
     /**
      * 미션 인증 글 등록
@@ -112,5 +117,62 @@ public class MissionBoardController {
     public void delete(AppAuthentication auth,
                        @PathVariable Long id) {
         missionBoardService.delete(auth.getUserId(), id, auth.getUserRole());
+    }
+
+    /**
+     * 모든 댓글을 조회합니다.
+     */
+    @GetMapping("/comments/{postId}")
+    public List<SummarizedCommentDto> listComments(@PathVariable Long postId) {
+        return commentService.list(postId);
+    }
+
+    /**
+     * 게시글에 댓글을 생성합니다.
+     **/
+    @PostMapping("/comment/{postId}")
+    @UserAuth
+    public ResponseIdDto createComment(AppAuthentication auth,
+                                @PathVariable Long postId,
+                                @Valid @RequestBody RequestCreateCommentDto dto) {
+        Long result = commentService.create(postId, auth.getUserId(), dto.getContent());
+        return new ResponseIdDto(result);
+    }
+
+    /**
+     * 댓글을 수정합니다.
+     * <p>대댓글도 수정할 수 있습니다.</p>
+     */
+    @PatchMapping("/comment/{commentId}")
+    @UserAuth
+    public void editComment(AppAuthentication auth,
+                     @PathVariable Long commentId,
+                     @Valid @RequestBody RequestCreateCommentDto dto) {
+        commentService.edit(commentId, auth.getUserId(), dto.getContent());
+    }
+
+    /**
+     * 댓글을 삭제합니다.
+     * <p>대댓글도 삭제할 수 있습니다.</p>
+     */
+    @DeleteMapping("/comment/{commentId}")
+    @UserAuth
+    public void deleteComment(AppAuthentication auth,
+                       @PathVariable Long commentId) {
+        commentService.delete(commentId, auth.getUserId());
+    }
+
+    /**
+     * 대댓글을 생성합니다.
+     *
+     * @param commentId   댓글 ID
+     */
+    @PostMapping("/reply/{commentId}")
+    @UserAuth
+    public ResponseIdDto createReply(AppAuthentication auth,
+                                     @PathVariable Long commentId,
+                                     @Valid @RequestBody RequestCreateCommentDto dto) {
+        Long result = commentService.createReply(commentId, auth.getUserId(), dto.getContent());
+        return new ResponseIdDto(result);
     }
 }
