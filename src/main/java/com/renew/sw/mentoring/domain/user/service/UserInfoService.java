@@ -7,6 +7,7 @@ import com.renew.sw.mentoring.domain.user.model.entity.User;
 import com.renew.sw.mentoring.domain.user.repository.UserInfoMemoryRepository;
 import com.renew.sw.mentoring.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +21,14 @@ public class UserInfoService {
     private final Clock clock;
     private final UserRepository persistenceRepository;
     private final UserInfoMemoryRepository memoryRepository;
+    private final MessageSource messageSource;
+
 
     @Transactional
     public ResponseUserInfoDto getFullUserInfo(Long userId) {
         User user = persistenceRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-        return new ResponseUserInfoDto(user.getStudentId(), user.getName(), user.getNickname(), user.getTeam().getTeamName(), user.getUserRole().isAdmin());
+        return new ResponseUserInfoDto(user, messageSource);
     }
 
     @Transactional(readOnly = true)
