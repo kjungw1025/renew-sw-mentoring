@@ -4,6 +4,9 @@ import com.renew.sw.mentoring.domain.team.exception.AlreadyTeamException;
 import com.renew.sw.mentoring.domain.team.model.dto.list.SummarizedTeamDto;
 import com.renew.sw.mentoring.domain.team.model.entity.Team;
 import com.renew.sw.mentoring.domain.team.repository.TeamRepository;
+import com.renew.sw.mentoring.domain.user.model.entity.User;
+import com.renew.sw.mentoring.domain.user.repository.UserRepository;
+import com.renew.sw.mentoring.mock.UserMock;
 import com.renew.sw.mentoring.util.DummyPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +35,9 @@ class TeamServiceTest {
     @Mock
     private TeamRepository teamRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     private final List<Team> teamList = new ArrayList<>();
 
     @Test
@@ -58,9 +64,13 @@ class TeamServiceTest {
                     .build();
             teamList.add(team);
         }
+        List<User> userList = UserMock.createList(teamList.get(0), 3);
+
         int TOTAL_ELEMENTS = 10;
         Page<Team> teamPage = new DummyPage<>(teamList, TOTAL_ELEMENTS);
         when(teamRepository.findAllDesc(any(Pageable.class))).thenReturn(teamPage);
+        when(userRepository.findMentorByTeamId(any())).thenReturn(Optional.of(userList.get(0)));
+        when(userRepository.findTeamMenteeByTeamId(any())).thenReturn(userList.subList(0, userList.size() - 1));
 
         // when
         Page<SummarizedTeamDto> list = teamService.getAllTeams(Pageable.unpaged());
@@ -70,6 +80,7 @@ class TeamServiceTest {
         for (int i = 0; i < list.getTotalElements(); i++) {
             SummarizedTeamDto dto = list.getContent().get(i);
             assertThat(dto.getTeamName()).isEqualTo(teamList.get(i).getTeamName());
+            assertThat(dto.getMembers()).isEqualTo(userList.stream().map(User::getName).toList());
         }
     }
 }
