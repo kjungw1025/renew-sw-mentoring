@@ -1,10 +1,16 @@
 package com.renew.sw.mentoring.domain.team.controller;
 
+import com.renew.sw.mentoring.domain.comment.repository.CommentRepository;
+import com.renew.sw.mentoring.domain.completedmission.repository.CompletedMissionRepository;
+import com.renew.sw.mentoring.domain.post.model.entity.type.MissionBoard;
 import com.renew.sw.mentoring.domain.post.model.entity.type.Notice;
 import com.renew.sw.mentoring.domain.post.repository.GenericPostRepository;
 import com.renew.sw.mentoring.domain.team.model.entity.Team;
 import com.renew.sw.mentoring.domain.team.repository.TeamRepository;
+import com.renew.sw.mentoring.domain.user.model.UserRole;
 import com.renew.sw.mentoring.domain.user.repository.UserRepository;
+import com.renew.sw.mentoring.mock.TeamMock;
+import com.renew.sw.mentoring.mock.UserMock;
 import com.renew.sw.mentoring.util.AbstractContainerRedisTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +45,15 @@ class TeamControllerTest extends AbstractContainerRedisTest {
     private TeamRepository teamRepository;
 
     @Autowired
+    private CompletedMissionRepository completedMissionRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private GenericPostRepository<MissionBoard> missionBoardRepository;
+
+    @Autowired
     private GenericPostRepository<Notice> noticeRepository;
 
     private final List<String> teamNameList = List.of("팀1", "팀2", "팀3", "팀4", "관리자팀");
@@ -46,24 +61,27 @@ class TeamControllerTest extends AbstractContainerRedisTest {
 
     @BeforeEach
     public void setUp() {
+        completedMissionRepository.deleteAll();
+        commentRepository.deleteAll();
+        missionBoardRepository.deleteAll();
         noticeRepository.deleteAll();
         userRepository.deleteAll();
         teamRepository.deleteAll();
 
-        for (int i = 0; i < 4; i++) {
-            Team team = Team.builder()
-                    .teamName(teamNameList.get(i))
-                    .build();
+        for (int i = 0; i < teamNameList.size(); i++) {
+            Team team = TeamMock.create(teamNameList.get(i));
+            if (i == 4) team.setAdminTeam();
             teamList.add(team);
             teamRepository.save(team);
         }
 
-        Team team = Team.builder()
-                .teamName(teamNameList.get(4))
-                .build();
-        team.setAdminTeam();
-        teamList.add(team);
-        teamRepository.save(team);
+        for (int i = 0; i < teamList.size(); i++) {
+            if (i == 4) {
+                userRepository.save(UserMock.create(teamList.get(i), UserRole.ADMIN));
+            } else {
+                userRepository.save(UserMock.create(teamList.get(i), UserRole.MENTOR));
+            }
+        }
     }
 
     @Test
@@ -77,6 +95,7 @@ class TeamControllerTest extends AbstractContainerRedisTest {
                 .andExpect(jsonPath("content.size()", is(4)))
                 .andExpect(jsonPath("content[0].id", is(teamList.get(0).getId().intValue())))
                 .andExpect(jsonPath("content[0].teamName", is("팀1")))
-                .andExpect(jsonPath("content[0].score", is(0)));
+                .andExpect(jsonPath("content[0].score", is(0)))
+                .andExpect(jsonPath("content[0].members.size()", is(1)));
     }
 }

@@ -42,7 +42,7 @@ public class TeamService {
      */
     public Page<SummarizedTeamDto> getAllTeams(Pageable pageable) {
         Page<Team> teams = teamRepository.findAllDesc(pageable);
-        return teams.map(SummarizedTeamDto::new);
+        return teams.map(team -> new SummarizedTeamDto(team, findTeamMembers(team)));
     }
 
     /**
@@ -63,5 +63,17 @@ public class TeamService {
             members.add(user.getName());
         }
         return new ResponseTeamInfoDto(team, mentor, members);
+    }
+
+    private List<String> findTeamMembers(Team team) {
+        String mentor = userRepository.findMentorByTeamId(team.getId()).orElseThrow(TeamNotFoundException::new).getName();
+        List<User> userList = userRepository.findTeamMenteeByTeamId(team.getId());
+
+        List<String> members = new ArrayList<>();
+        members.add(mentor);
+        for (User user : userList) {
+            members.add(user.getName());
+        }
+        return members;
     }
 }
