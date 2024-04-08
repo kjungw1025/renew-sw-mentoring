@@ -40,7 +40,7 @@ public class MissionParser {
                 String difficulty = checkMissionDifficulty(s);
                 int point = checkMissionPoint(s);
 
-                int rows = sheet.getPhysicalNumberOfRows();
+                int rows = getRows(s);
 
                 for (int r = 1; r < rows; r++ ){
                     String name = "";
@@ -54,8 +54,8 @@ public class MissionParser {
                             XSSFCell cell = row.getCell(c);
 
                             //미션 이름
-                            if(c == 1 && cell.getStringCellValue().contains(".")) {
-                                name = cell.getStringCellValue().substring(cell.getStringCellValue().indexOf(".") + 1).trim();
+                            if(c == 1 && cell.getStringCellValue().length() >= 2) {
+                                name = cell.getStringCellValue().trim();
                             //미션 설명
                             } else if (c == 2 && cell.getStringCellValue().length() >= 2) {
                                 description = cell.getStringCellValue().trim();
@@ -77,23 +77,45 @@ public class MissionParser {
                         missionRepository.save(mission);
 
                         if (!bonusMission.isEmpty()) {
-                            String[] split = bonusMission.split("\\+");
-                            String bonusName = split[0].trim();
-                            String bonusPointSplit = split[1].trim();
-                            int bonusPoint;
+                            if(bonusMission.contains("월미도")) {
+                                String[] split = bonusMission.split("\\+");
+                                for(int i = 0; i < 3; i++) {
+                                    String bonusName = split[i].trim();
+                                    String bonusPointSplit = split[i + 1].trim();
+                                    int bonusPoint;
 
-                            if (split[1].trim().contains("점")) {
-                                bonusPoint = Integer.parseInt(bonusPointSplit.substring(0, split[1].trim().lastIndexOf("점")));
+                                    if (split[i+1].trim().contains("점")) {
+                                        bonusPoint = Integer.parseInt(bonusPointSplit.substring(0, split[i+1].trim().lastIndexOf("점")));
+                                    } else {
+                                        bonusPoint = Integer.parseInt(bonusPointSplit);
+                                    }
+                                    BonusMission bm = BonusMission.builder()
+                                            .name(bonusName)
+                                            .description("")
+                                            .point(bonusPoint)
+                                            .mission(mission)
+                                            .build();
+                                    bonusMissionRepository.save(bm);
+                                }
                             } else {
-                                bonusPoint = Integer.parseInt(bonusPointSplit);
+                                String[] split = bonusMission.split("\\+");
+                                String bonusName = split[0].trim();
+                                String bonusPointSplit = split[1].trim();
+                                int bonusPoint;
+
+                                if (split[1].trim().contains("점")) {
+                                    bonusPoint = Integer.parseInt(bonusPointSplit.substring(0, split[1].trim().lastIndexOf("점")));
+                                } else {
+                                    bonusPoint = Integer.parseInt(bonusPointSplit);
+                                }
+                                BonusMission bm = BonusMission.builder()
+                                        .name(bonusName)
+                                        .description("")
+                                        .point(bonusPoint)
+                                        .mission(mission)
+                                        .build();
+                                bonusMissionRepository.save(bm);
                             }
-                            BonusMission bm = BonusMission.builder()
-                                    .name(bonusName)
-                                    .description("")
-                                    .point(bonusPoint)
-                                    .mission(mission)
-                                    .build();
-                            bonusMissionRepository.save(bm);
                         }
                     }
                     if (name.length() >= 2) {
@@ -104,7 +126,20 @@ public class MissionParser {
 
         } catch (Exception e) {
             log.info("MissionParser.parseExcel() : {}", e.getMessage());
+            log.info("StackTrace : {}", e.getStackTrace());
         }
+    }
+
+    private int getRows(int s) {
+        return switch (s) {
+            case 1 -> 19;
+            case 2 -> 57;
+            case 3 -> 75;
+            case 4 -> 21;
+            case 5 -> 23;
+            case 6 -> 6;
+            default -> 0;
+        };
     }
 
     private String checkMissionDifficulty(int sheetNumber) {
