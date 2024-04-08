@@ -13,6 +13,6 @@ public interface MissionRepository extends JpaRepository<Mission, Long>, JpaSpec
 
     Page<Mission> findAll(Specification<Mission> spec, Pageable pageable);
 
-    @Query("select m from Mission m where m.id = (select bm.mission.id from BonusMission bm where bm.mission.id = m.id)")
+    @Query("select distinct m from Mission m where m.id in (select bm.mission.id from BonusMission bm where bm.mission.id = m.id)")
     Page<Mission> findAllWithBonusMission(Specification<Mission> spec, Pageable pageable);
 }
