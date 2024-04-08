@@ -1,7 +1,9 @@
 package com.renew.sw.mentoring.domain.post.service;
 
 import com.renew.sw.mentoring.domain.completedmission.repository.CompletedMissionRepository;
+import com.renew.sw.mentoring.domain.mission.exception.BonusMissionNotFoundException;
 import com.renew.sw.mentoring.domain.mission.exception.MissionNotFoundException;
+import com.renew.sw.mentoring.domain.mission.repository.BonusMissionRepository;
 import com.renew.sw.mentoring.domain.post.exception.AlreadyMissionBoardAcceptedException;
 import com.renew.sw.mentoring.domain.post.exception.AlreadyMissionBoardException;
 import com.renew.sw.mentoring.domain.post.exception.PostNotFoundException;
@@ -40,12 +42,15 @@ public class MissionBoardService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final CompletedMissionRepository completedMissionRepository;
+    private final BonusMissionRepository bonusMissionRepository;
 
     public Long create(Long userId, RequestCreateMissionBoardDto dto) {
         Team team = teamRepository.findByUserId(userId).orElseThrow(TeamNotFoundException::new);
         if (completedMissionRepository.existsByTeamIdAndMissionId(team.getId(), dto.getMissionId()).isPresent() ||
                 repository.findByMissionIdAndUserId(dto.getMissionId(), userId).isPresent()) {
             throw new AlreadyMissionBoardException();
+        } else if (dto.getIsBonusMissionSuccessful() && bonusMissionRepository.findByMissionId(dto.getMissionId()).isEmpty()) {
+            throw new BonusMissionNotFoundException();
         }
         return postService.create(repository, userId, dto);
     }
