@@ -76,19 +76,19 @@ public class MissionBoardController {
     }
 
     /**
-     * 내가 쓴 글 조회
+     * 팀이 작성한 쓴 글 조회
      * @return      내가 작성한 미션 인증 게시글 정보들
      *
      * <p>
      *     멘토들에 해당됩니다.
      * </p>
      */
-    @GetMapping("/my")
-    @MentorAuth
+    @GetMapping("/my-team")
+    @UserAuth
     public ResponsePage<SummarizedMissionBoardDto> listMyPosts(AppAuthentication auth,
                                                               @ParameterObject Pageable pageable,
                                                               @RequestParam(defaultValue = "10") int bodySize) {
-        Page<SummarizedMissionBoardDto> posts = missionBoardService.listMyPosts(auth.getUserId(), pageable, bodySize);
+        Page<SummarizedMissionBoardDto> posts = missionBoardService.listMyTeamPosts(auth.getUserId(), pageable, bodySize);
         return new ResponsePage<>(posts);
     }
 

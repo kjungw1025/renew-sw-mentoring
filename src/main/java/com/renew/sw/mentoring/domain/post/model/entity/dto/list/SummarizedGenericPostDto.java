@@ -7,6 +7,7 @@ import com.renew.sw.mentoring.infra.s3.service.AWSObjectStorageService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -33,6 +34,12 @@ public class SummarizedGenericPostDto {
     @Schema(description = "댓글 수", example = "16")
     private final int commentCount;
 
+    @Schema(description = "게시글 생성 날짜", example = "2021-08-01T00:00:00")
+    private final LocalDateTime createdAt;
+
+    @Schema(description = "게시글 마지막 수정 날짜", example = "2021-08-01T00:00:00")
+    private final LocalDateTime lastModifiedAt;
+
     public SummarizedGenericPostDto(AWSObjectStorageService s3service, int bodySize, Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
@@ -41,6 +48,8 @@ public class SummarizedGenericPostDto {
         this.images = PostImageDto.listOf(s3service, post.getImages());
         this.files = PostFileDto.listOf(s3service, post.getFiles());
         this.commentCount = post.getComments().size();
+        this.createdAt = post.getCreatedAt();
+        this.lastModifiedAt = post.getLastModifiedAt();
     }
 
     private static String slice(String text, int maxLen) {

@@ -1,14 +1,16 @@
 package com.renew.sw.mentoring.domain.admin.request;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class RequestCreateAdminDto {
 
-    private final String studentId;
-    private final String password;
-    private final String name;
-    private final String nickname;
+    private String studentId;
+    private String password;
+    private String name;
+    private String nickname;
 
     public RequestCreateAdminDto(String studentId, String password, String name, String nickname) {
         this.studentId = studentId;
