@@ -57,7 +57,7 @@ public class CompletedMissionService {
     public Page<SummarizedMissionDto> listMyTeam(Pageable pageable, Long userId) {
         Page<CompletedMission> completedMissions;
 
-        Long teamId = userRepository.findById(userId).orElseThrow(UserNotFoundException::new).getId();
+        Long teamId = userRepository.findById(userId).orElseThrow(UserNotFoundException::new).getTeam().getId();
         completedMissions = completedMissionRepository.findAllByTeamId(pageable, teamId);
 
         return completedMissions.map(completedMission -> {

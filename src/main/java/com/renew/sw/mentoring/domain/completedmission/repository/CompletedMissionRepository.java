@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface CompletedMissionRepository extends JpaRepository<CompletedMission, Long> {
 
     @Query("select c from CompletedMission c where c.team.id = :teamId")
@@ -16,4 +18,7 @@ public interface CompletedMissionRepository extends JpaRepository<CompletedMissi
     @Modifying
     @Query("delete from CompletedMission c where c.team.id = :teamId and c.mission.id = :missionId ")
     void deleteByTeamIdAndMissionId(@Param("teamId") Long teamId, @Param("missionId") Long missionId);
+
+    @Query("select c from CompletedMission c where c.team.id = :teamId and c.mission.id = :missionId ")
+    Optional<CompletedMission> existsByTeamIdAndMissionId(@Param("teamId") Long teamId, @Param("missionId") Long missionId);
 }
