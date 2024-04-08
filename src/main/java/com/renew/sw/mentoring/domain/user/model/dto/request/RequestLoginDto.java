@@ -1,11 +1,13 @@
 package com.renew.sw.mentoring.domain.user.model.dto.request;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class RequestLoginDto {
-    private final String studentId;
-    private final String password;
+    private String studentId;
+    private String password;
 
     public RequestLoginDto(String studentId, String password) {
         this.studentId = studentId;
